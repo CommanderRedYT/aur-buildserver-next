@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./aur-buildserver-next.sqlite"
+}
+
+model AurPackage {
+  id        String @id @default(cuid())
+  packageId Int    @unique
+
+  lastModifiedDatabaseEntry DateTime @updatedAt
+
+  versionsBuild AurPackageVersion[]
+
+  // metadata
+  name             String
+  description      String?
+  packageBaseId    Int
+  packageBase      String
+  maintainer       String?
+  votes            Int
+  popularity       Float
+  firstSubmitted   DateTime
+  lastModified     DateTime
+  flaggedOutOfDate Boolean?
+  currentVersion   String
+  urlPath          String?
+  url              String?
+
+  licenses         AurPackageLicense[]
+  dependencies     AurDependency[]
+  makeDependencies AurMakeDependency[]
+  keywords         AurKeyword[]
+  coMaintainers    AurPackageCoMaintainer[]
+}
+
+model AurPackageLicense {
+  id        String @id @default(cuid())
+  packageId Int
+  license   String
+
+  package AurPackage @relation(fields: [packageId], references: [packageId])
+}
+
+model AurDependency {
+  id          String @id @default(cuid())
+  packageId   Int
+  packageName String
+
+  package AurPackage @relation(fields: [packageId], references: [packageId])
+}
+
+model AurMakeDependency {
+  id          String @id @default(cuid())
+  packageId   Int
+  packageName String
+
+  package AurPackage @relation(fields: [packageId], references: [packageId])
+}
+
+model AurKeyword {
+  id      String @id @default(cuid())
+  keyword String @unique
+
+  packages AurPackage[]
+}
+
+model AurPackageCoMaintainer {
+  id        String @id @default(cuid())
+  packageId Int
+  name      String
+
+  package AurPackage @relation(fields: [packageId], references: [packageId])
+}
+
+model AurPackageVersion {
+  id        String @id @default(cuid())
+  packageId String
+  version   String
+
+  package AurPackage @relation(fields: [packageId], references: [id])
+}

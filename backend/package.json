@@ -1,0 +1,74 @@
+{
+  "name": "aur-buildserver-next-backend",
+  "version": "0.1.0",
+  "description": "Backend for aur-buildserver-next",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --experimental-specifier-resolution=node --loader ./loader.js --no-warnings=ExperimentalWarning src/index.ts",
+    "dev": "DEBUG=\"prisma*\" NODE_ENV=development nodemon",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "postinstall": "patch-package && ./setup.sh",
+    "reset": "./setup.sh -r",
+    "full-reset": "rm -rf prisma/migrations prisma/aur-buildserver-next.sqlite* && yarn run reset",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fetch-aur-api": "wget -O aur-openapi.json https://aur.archlinux.org/rpc/openapi.json",
+    "generate-types": "yarn fetch-aur-api && yarn openapi-typescript ./aur-openapi.json --output src/generated/aur.ts && yarn openapi-typescript ./aur-buildserver-next-backend.json --output src/generated/backend.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "5.16.0",
+    "axios": "^1.7.2",
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "morgan": "^1.10.0",
+    "openapi-typescript-fetch": "^2.0.0",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
+    "prisma": "^5.16.0",
+    "sqlite3": "^5.1.7",
+    "swagger-ui-express": "^5.0.1",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.5.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^20.14.9",
+    "@types/swagger-ui-express": "^4.1.6",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jest": "^28.6.0",
+    "eslint-plugin-no-relative-import-paths": "^1.5.4",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-simple-import-sort": "^12.1.0",
+    "nodemon": "^3.1.4",
+    "openapi-typescript": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "prisma": {
+    "seed": "node ./prisma/seed.js"
+  },
+  "nodemonConfig": {
+    "legacyWatch": true,
+    "watch": [
+      "src"
+    ],
+    "ext": "ts",
+    "exec": "yarn start"
+  }
+}

@@ -1,0 +1,350 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "AUR Buildserver Next Backend",
+        "description": "Backend for aur-buildserver-next",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:5768",
+            "description": "Development server"
+        }
+    ],
+    "components": {
+        "parameters": {
+            "packageName": {
+                "name": "packageName",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "schemas": {
+            "SuccessResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "success"
+                ]
+            },
+            "ErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "success",
+                    "error"
+                ]
+            },
+            "PackageByNameBody": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "PackageFromDatabase": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "packageId": {
+                        "type": "number"
+                    },
+                    "lastModifiedDatabaseEntry": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "packageBaseId":  {
+                        "type": "integer"
+                    },
+                    "packageBase": {
+                        "type": "string"
+                    },
+                    "maintainer":  {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "votes": {
+                        "type": "integer"
+                    },
+                    "popularity":  {
+                        "type": "number"
+                    },
+                    "firstSubmitted": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "lastModified":  {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "flaggedOutOfDate": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "currentVersion":  {
+                        "type": "string"
+                    },
+                    "urlPath": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "url":  {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "id",
+                    "packageId",
+                    "lastModifiedDatabaseEntry",
+                    "name",
+                    "description",
+                    "packageBaseId",
+                    "packageBase",
+                    "maintainer",
+                    "votes",
+                    "popularity",
+                    "firstSubmitted",
+                    "lastModified",
+                    "flaggedOutOfDate",
+                    "currentVersion",
+                    "urlPath",
+                    "url"
+                ]
+            }
+        }
+    },
+    "paths": {
+        "/api/packages/add": {
+            "post": {
+                "summary": "Add a new package to database",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PackageByNameBody"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/aur/search/{packageName}": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/packageName"
+                }
+            ],
+            "get": {
+                "summary": "Search for an AUR package",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/SuccessResponse"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "allOf": [
+                                                        {
+                                                            "$ref": "./aur-openapi.json#/components/schemas/SearchResult"
+                                                        },
+                                                        {
+                                                            "type": "object",
+                                                            "description": "Additional data",
+                                                            "properties": {
+                                                                "knownPackages": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "packageId": {
+                                                                                "type": "number"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "packageId"
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "knownPackages"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/aur/fetchPkgbuild/{packageName}": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/packageName"
+                }
+            ],
+            "get": {
+                "summary": "Get the pkgbuild of an AUR package",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/SuccessResponse"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "string",
+                                                    "description": "The pkgbuild content"
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/packages/list": {
+            "get": {
+                "summary": "List all packages in database",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/SuccessResponse"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/PackageFromDatabase"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

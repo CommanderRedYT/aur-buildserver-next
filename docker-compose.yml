@@ -1,0 +1,28 @@
+services:
+  backend-dev:
+    image: "ghcr.io/commanderredyt/node:20.15.0-archlinux"
+    container_name: backend-dev
+    working_dir: /app
+    user: "1000:1000"
+    volumes:
+      - ./backend:/app
+    ports:
+      - "5768:5768"
+    environment:
+      - BACKEND_LISTEN_PORT=5768
+      - BACKEND_LISTEN_HOST=0.0.0.0
+    command: yarn dev
+    tty: true
+
+  frontend-dev:
+    image: node:20-alpine
+    container_name: frontend-dev
+    working_dir: /app
+    user: "1000:1000"
+    volumes:
+      - ./frontend:/app
+    environment:
+      - CONFIG_API_URL=http://backend-dev:5768
+    ports:
+      - "3000:3000"
+    command: yarn dev

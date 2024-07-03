@@ -1,0 +1,15 @@
+diff --git a/node_modules/openapi-typescript-fetch/dist/index.d.ts b/node_modules/openapi-typescript-fetch/dist/index.d.ts
+index 276c553..59d8d62 100644
+--- a/node_modules/openapi-typescript-fetch/dist/index.d.ts
++++ b/node_modules/openapi-typescript-fetch/dist/index.d.ts
+@@ -42,8 +42,8 @@ declare module 'openapi-typescript-fetch/types' {
+               'application/json': infer RB;
+           };
+       };
+-  } ? P & Q & (B extends Record<string, unknown> ? B[keyof B] : unknown) & RB : Record<string, never>;
+-  type OpResponseTypes<OP> = OP extends {
++  } ? (P extends Record<string, unknown> ? P : unknown) & (Q extends Record<string, unknown> ? Q : unknown) & (B extends Record<string, unknown> ? B[keyof B] : unknown) & RB : Record<string, never>;
++  export type OpResponseTypes<OP> = OP extends {
+       responses: infer R;
+   } ? {
+       [S in keyof R]: R[S] extends {
