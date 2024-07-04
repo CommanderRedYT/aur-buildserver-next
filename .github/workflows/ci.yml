@@ -13,6 +13,7 @@ jobs:
       matrix:
         subfolder: ["frontend", "backend"]
         command: ["lint", "typecheck"]
+      fail-fast: false
 
     name: Run yarn ${{ matrix.command }} in ${{ matrix.subfolder }}/
     defaults:
