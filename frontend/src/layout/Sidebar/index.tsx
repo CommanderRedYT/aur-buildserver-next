@@ -1,7 +1,8 @@
 import type { FC } from 'react';
 
-import SidebarItems from '@/components/layout/Sidebar/SidebarItems';
 import Logo from '@/components/Logo';
+
+import SidebarItems from '@/layout/Sidebar/SidebarItems';
 
 import type { Theme } from '@mui/material';
 import { Box, Drawer, useMediaQuery } from '@mui/material';
@@ -9,16 +10,11 @@ import { Box, Drawer, useMediaQuery } from '@mui/material';
 export interface SidebarProps {
     isMobileSidebarOpen: boolean;
     onSidebarClose: () => void;
-    toggleMobileSidebar: () => void;
 }
 
 const sidebarWidth = '270px';
 
-const Sidebar: FC<SidebarProps> = ({
-    onSidebarClose,
-    isMobileSidebarOpen,
-    toggleMobileSidebar,
-}) => {
+const Sidebar: FC<SidebarProps> = ({ onSidebarClose, isMobileSidebarOpen }) => {
     const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
 
     if (lgUp) {
@@ -45,9 +41,7 @@ const Sidebar: FC<SidebarProps> = ({
                             <Logo />
                         </Box>
                         <Box>
-                            <SidebarItems
-                                toggleMobileSidebar={toggleMobileSidebar}
-                            />
+                            <SidebarItems />
                         </Box>
                     </Box>
                 </Drawer>
@@ -73,7 +67,7 @@ const Sidebar: FC<SidebarProps> = ({
                     <Logo />
                 </Box>
                 <Box>
-                    <SidebarItems toggleMobileSidebar={toggleMobileSidebar} />
+                    <SidebarItems />
                 </Box>
             </Box>
         </Drawer>

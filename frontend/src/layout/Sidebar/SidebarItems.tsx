@@ -2,18 +2,13 @@ import { usePathname } from 'next/navigation';
 
 import type { FC } from 'react';
 
-import NavGroup from '@/components/layout/Sidebar/NavGroup';
-import NavItem from '@/components/layout/Sidebar/NavItem';
-
 import MenuItems from '@/constants/sidebar';
+import NavGroup from '@/layout/Sidebar/NavGroup';
+import NavItem from '@/layout/Sidebar/NavItem';
 
 import { List } from '@mui/material';
 
-export interface SidebarItemsProps {
-    toggleMobileSidebar: () => void;
-}
-
-const SidebarItems: FC<SidebarItemsProps> = () => {
+const SidebarItems: FC = () => {
     const pathname = usePathname();
 
     return (

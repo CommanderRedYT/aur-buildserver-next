@@ -9,7 +9,7 @@ export default async function listPackages(_: Request, res: Response): Promise<v
     try {
         const packages = await listKnownPackages();
 
-        successResponse<'/api/packages/list'>(res, packages);
+        successResponse<'/api/packages/list'>(res, packages, { canCache: false });
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             if (e.code === 'P2002') {

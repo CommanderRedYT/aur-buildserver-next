@@ -52,6 +52,23 @@ const nextConfig = {
 
         return config;
     },
+    experimental: {
+        staleTimes: {
+            dynamic: 0.5,
+            static: 180,
+        },
+        typedRoutes: process.env.TURBOPACK !== '1',
+        ...(process.env.TURBOPACK === '1' ? {
+            turbo: {
+                rules: {
+                    '*.svg': {
+                        loaders: ['@svgr/webpack'],
+                        as: '*.js',
+                    }
+                }
+            }
+        } : {}),
+    },
 };
 
 export default nextConfig;

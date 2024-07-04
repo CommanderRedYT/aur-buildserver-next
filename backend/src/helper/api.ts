@@ -51,37 +51,47 @@ export const requireBodyParams: RequireParams = (params) => (req, res) => {
     return Object.fromEntries(foundParamsWithTheirValues) as Record<typeof params[number], string>;
 };
 
+export interface ResponseOptions {
+    canCache?: boolean;
+}
+
+export const defaultResponseOptions: ResponseOptions = {
+    canCache: true,
+};
+
 export type GetOrPost<T> = T extends { get: unknown } ? T['get'] : T extends { post: unknown } ? T['post'] : never;
 
 export type GetKeyIfExists<T, K, R = never> = K extends keyof T ? T[K] : R;
 
-type Foo<T extends keyof backendPaths> = OpResponseTypes<GetOrPost<backendPaths[T]>>[200];
+export type GetSuccessResponse<T extends keyof backendPaths> = OpResponseTypes<GetOrPost<backendPaths[T]>>[200];
 
-export type ApiResponseType<T extends keyof backendPaths> = GetKeyIfExists<Foo<T>, 'data', Foo<T> extends { success: unknown } ? undefined : never>;
+export type ApiResponseType<T extends keyof backendPaths> = GetKeyIfExists<GetSuccessResponse<T>, 'data', GetSuccessResponse<T> extends { success: unknown } ? undefined : never>;
 
-/*
-export const successResponse = <T extends keyof backendPaths = never>(res: Response, data: ApiResponseType<T>): void => {
-    res.status(200).json({ success: true, data });
-};
-*/
-
-// rewrite successResponse so that data is optional in case ApiResponseType<T> is undefined
-// type SuccessResponse<T extends keyof backendPaths> = ApiResponseType<T> extends undefined ? { success: true } : { success: true; data: ApiResponseType<T> };
-
-// type of the function (() => T)
-export type SuccessResponse<T extends keyof backendPaths> = ApiResponseType<T> extends undefined ? [res: Response] : [res: Response, data: ApiResponseType<T>];
+export type SuccessResponse<T extends keyof backendPaths> = ApiResponseType<T> extends undefined ? [res: Response, data?: never, options?: ResponseOptions] : [res: Response, data: ApiResponseType<T>, options?: ResponseOptions];
 
 export const successResponse = <T extends keyof backendPaths = never>(...args: SuccessResponse<T>): void => {
-    const [res, data] = args;
+    const [res, dataOrOptions, maybeOptions] = args;
+
+    const actualData = dataOrOptions as ApiResponseType<T>;
+    const actualOptions = {
+        ...defaultResponseOptions,
+        ...(maybeOptions as ResponseOptions),
+    };
 
     if (process.env.NODE_ENV === 'development') {
-        console.log('successResponse', data);
+        console.log('successResponse', actualData, actualOptions);
     }
 
-    res.status(200).json({ success: true, data });
+    if (!actualOptions?.canCache) {
+        res.setHeader('Cache-Control', 'no-store');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+    }
+
+    res.status(200).json({ success: true, data: actualData });
 };
 
-export const errorResponse = (res: Response, code: HttpStatusCode, message?: string, debugInfo?: unknown): void => {
+export const errorResponse = (res: Response, code: HttpStatusCode, message?: string, options?: ResponseOptions, debugInfo?: unknown): void => {
     if (process.env.NODE_ENV === 'development') {
         console.error('errorResponse', code, message, debugInfo);
     }

@@ -118,16 +118,6 @@ const componentsTheme = createTheme(colorTheme, {
                 }),
             },
         },
-        MuiModal: {
-            styleOverrides: {
-                // create proper Material 3 modal
-                root: {
-                    '& .MuiBackdrop-root': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                    },
-                },
-            },
-        },
     },
 } as ThemeOptions);
 

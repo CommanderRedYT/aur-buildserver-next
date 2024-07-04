@@ -1,3 +1,5 @@
+import type { Route } from 'next';
+
 import type { SvgIconComponent } from '@mui/icons-material';
 import AppsIcon from '@mui/icons-material/Apps';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
@@ -11,7 +13,7 @@ export interface SubheaderMenuItem {
 export interface MenuItem {
     key: string;
     title: (t: (key: string) => string) => string;
-    href: string;
+    href: Route;
     disabled?: boolean;
     external?: boolean;
     Icon?: SvgIconComponent;

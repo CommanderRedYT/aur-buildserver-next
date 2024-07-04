@@ -1,22 +1,25 @@
 import type { FC } from 'react';
+import React from 'react';
 
-import type { TypeOfArrayItem } from '@/types';
+import type { KnownPackagesDataItem } from '@/app/(main)/packages/page';
 
-import type { KnownPackages } from '@/content/KnownPackagesPage';
 import stringAvatar from '@/lib/stringAvatar';
 
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
     Avatar,
     Card,
     CardContent,
     CardHeader,
+    IconButton,
     styled,
     Typography,
 } from '@mui/material';
 
 export interface KnownPackagesListItemProps {
-    pkg: TypeOfArrayItem<KnownPackages>;
+    pkg: KnownPackagesDataItem;
     onClick: () => void;
+    onOptionsClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -31,37 +34,39 @@ const StyledCard = styled(Card)(({ theme }) => ({
 
 const KnownPackagesListItem: FC<KnownPackagesListItemProps> = ({
     pkg,
-    onClick,
-}) => {
-    const foo = 'bar';
-
-    return (
-        <StyledCard elevation={0}>
-            <CardHeader
-                title={pkg.name}
-                avatar={<Avatar {...stringAvatar(pkg.maintainer)} />}
-                subheader={pkg.maintainer}
-                sx={{ whiteSpace: 'normal' }}
-            />
-            <CardContent
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flexGrow: 1,
-                    paddingTop: 0,
-                    paddingBottom: 0,
-                }}
+    onOptionsClick,
+}) => (
+    <StyledCard elevation={0}>
+        <CardHeader
+            title={pkg.name}
+            avatar={<Avatar {...stringAvatar(pkg.maintainer)} />}
+            subheader={pkg.maintainer}
+            action={
+                <IconButton onClick={onOptionsClick}>
+                    <MoreVertIcon />
+                </IconButton>
+            }
+            sx={{ whiteSpace: 'normal' }}
+        />
+        <CardContent
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                flexGrow: 1,
+                paddingTop: 0,
+                paddingBottom: 0,
+            }}
+        >
+            <Typography
+                variant="body2"
+                color="textSecondary"
+                paragraph
+                sx={{ margin: 0 }}
             >
-                <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    paragraph
-                    sx={{ margin: 0 }}
-                >
-                    {pkg.description}
-                </Typography>
-            </CardContent>
-            {/* <CardActions>
+                {pkg.description}
+            </Typography>
+        </CardContent>
+        {/* <CardActions>
                 <Button
                     disabled={isKnownPackage}
                     onClick={e => {
@@ -102,7 +107,6 @@ const KnownPackagesListItem: FC<KnownPackagesListItemProps> = ({
                     View more
                 </Button>
             </CardActions> */}
-        </StyledCard>
-    );
-};
+    </StyledCard>
+);
 export default KnownPackagesListItem;

@@ -76,7 +76,7 @@ export default async function addPackage(req: Request, res: Response): Promise<v
             || typeof URLPath === 'undefined'
             || typeof URL === 'undefined'
         ) {
-            errorResponse(res, 500, 'Invalid package data', {
+            errorResponse(res, 500, 'Invalid package data', undefined, {
                 ID: `ID: ${typeof ID}`,
                 Name: `Name: ${typeof Name}`,
                 Description: `Description: ${typeof Description}`,
@@ -167,21 +167,21 @@ export default async function addPackage(req: Request, res: Response): Promise<v
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
             if (e.code === 'P2002') {
-                errorResponse(res, 409, 'Package already exists', {
+                errorResponse(res, 409, 'Package already exists', undefined, {
                     message: e.message,
                 });
                 return;
             }
 
-            errorResponse(res, 500, e.message, { e });
+            errorResponse(res, 500, e.message, undefined, { e });
         } else if (e instanceof lookupPackageEndpoint.Error) {
             const error = e.getActualType();
 
-            errorResponse(res, 500, error.data.error, {
+            errorResponse(res, 500, error.data.error, undefined, {
                 error,
             });
         } else {
-            errorResponse(res, 500, undefined, {
+            errorResponse(res, 500, undefined, undefined, {
                 e,
             });
         }

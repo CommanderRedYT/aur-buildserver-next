@@ -42,7 +42,15 @@ const CustomModal: FC<CustomModalProps> = ({
     overrideWidth,
     ...props
 }) => (
-    <Modal {...props}>
+    <Modal
+        {...props}
+        sx={{
+            '& .MuiBackdrop-root': {
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            },
+            ...props.sx,
+        }}
+    >
         <ModalContentWrapper overrideWidth={overrideWidth}>
             <Box
                 display="flex"

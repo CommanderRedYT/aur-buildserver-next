@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 const RootLayout: FC<RootLayoutProps> = ({ children }) => (
     <html lang="en">
         <body>
-            <AppRouterCacheProvider>
+            <AppRouterCacheProvider options={{ enableCssLayer: true }}>
                 <ThemeProvider theme={theme}>
                     <CssBaseline />
                     {children}

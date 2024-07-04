@@ -46,7 +46,7 @@ model AurPackageLicense {
   packageId Int
   license   String
 
-  package AurPackage @relation(fields: [packageId], references: [packageId])
+  package AurPackage @relation(fields: [packageId], references: [packageId], onDelete: Cascade)
 }
 
 model AurDependency {
@@ -54,7 +54,7 @@ model AurDependency {
   packageId   Int
   packageName String
 
-  package AurPackage @relation(fields: [packageId], references: [packageId])
+  package AurPackage @relation(fields: [packageId], references: [packageId], onDelete: Cascade)
 }
 
 model AurMakeDependency {
@@ -62,7 +62,7 @@ model AurMakeDependency {
   packageId   Int
   packageName String
 
-  package AurPackage @relation(fields: [packageId], references: [packageId])
+  package AurPackage @relation(fields: [packageId], references: [packageId], onDelete: Cascade)
 }
 
 model AurKeyword {
@@ -77,7 +77,7 @@ model AurPackageCoMaintainer {
   packageId Int
   name      String
 
-  package AurPackage @relation(fields: [packageId], references: [packageId])
+  package AurPackage @relation(fields: [packageId], references: [packageId], onDelete: Cascade)
 }
 
 model AurPackageVersion {
@@ -85,5 +85,5 @@ model AurPackageVersion {
   packageId String
   version   String
 
-  package AurPackage @relation(fields: [packageId], references: [id])
+  package AurPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
 }

@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import fs from 'fs';
+import path from 'path';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 
@@ -26,6 +27,11 @@ app.use(morgan('dev'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+if (process.env.NODE_ENV === 'development') {
+    console.log('Serving static files enabled');
+    app.use(express.static(path.join(import.meta.dirname, 'static')));
+}
 
 app.get('/aur-openapi.json', (_, res) => {
     res.sendFile('aur-openapi.json', { root: './' });

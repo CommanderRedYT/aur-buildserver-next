@@ -3,12 +3,15 @@
 import type { FC, FormEvent } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 
-import type { TypeOfArrayItem } from '@/types';
+import { useSnackbar } from 'notistack';
+
+import DiscoverPackageDetailsModal from '@/app/(main)/discover/_components/DiscoverPackageDetailsModal';
+import DiscoverPackageList from '@/app/(main)/discover/_components/DiscoverPackageList';
+
+import type { ListViewModes, TypeOfArrayItem } from '@/types';
 
 import FullWidthForm from '@/components/FullWidthForm';
 
-import DiscoverPackageDetailsModal from '@/content/DiscoverPackagesPage/DiscoverPackageDetailsModal';
-import DiscoverPackageList from '@/content/DiscoverPackagesPage/DiscoverPackageList';
 import type { SearchPackageReturnType } from '@/lib/fetcher';
 import backendFetcherApi from '@/lib/fetcher';
 
@@ -21,7 +24,6 @@ import {
     TextField,
     ToggleButton,
     ToggleButtonGroup,
-    Typography,
     useMediaQuery,
 } from '@mui/material';
 
@@ -33,29 +35,29 @@ const knownPackagesEndpoint = backendFetcherApi('/api/packages/list')
     .method('get')
     .create();
 
-export type PackagesPageViewModes = 'list' | 'grid';
-
-const DiscoverPackagesPage: FC = () => {
+const DiscoverPackageContent: FC = () => {
     const [fetchedPackages, setFetchedPackages] = useState<
         SearchPackageReturnType | undefined
     >(undefined);
-    const [viewMode, setViewMode] = useState<PackagesPageViewModes>('list');
+
+    const [viewMode, setViewMode] = useState<ListViewModes>('list');
 
     const [searchQuery, setSearchQuery] = useState<string>('');
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [error, setError] = useState<string | null>(null);
-
     const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
+
+    const { enqueueSnackbar } = useSnackbar();
 
     const handleSearch = useCallback(
         async (event: FormEvent) => {
             event.preventDefault();
-            setError(null);
 
             if (!searchQuery) {
-                setError('Search query cannot be empty');
+                enqueueSnackbar('Search query cannot be empty', {
+                    variant: 'error',
+                });
                 return;
             }
 
@@ -70,7 +72,9 @@ const DiscoverPackagesPage: FC = () => {
 
                 if (!response.ok) {
                     console.error('!response.ok', response);
-                    setError('Failed to fetch packages');
+                    enqueueSnackbar('Failed to fetch packages', {
+                        variant: 'error',
+                    });
                     return;
                 }
 
@@ -78,7 +82,9 @@ const DiscoverPackagesPage: FC = () => {
 
                 if (!success) {
                     console.error('success === false', data);
-                    setError('Failed to fetch packages');
+                    enqueueSnackbar('Failed to fetch packages', {
+                        variant: 'error',
+                    });
                     return;
                 }
 
@@ -89,7 +95,7 @@ const DiscoverPackagesPage: FC = () => {
                 }
 
                 if (data && data.type === 'error' && 'error' in data) {
-                    setError(data.error as string);
+                    enqueueSnackbar(data.error as string, { variant: 'error' });
                     return;
                 }
 
@@ -115,10 +121,12 @@ const DiscoverPackagesPage: FC = () => {
             } catch (e) {
                 setLoading(false);
                 console.error(e);
-                setError('Failed to fetch packages');
+                enqueueSnackbar('Failed to fetch packages', {
+                    variant: 'error',
+                });
             }
         },
-        [searchQuery],
+        [searchQuery, enqueueSnackbar],
     );
 
     const [selectedPackage, setSelectedPackage] = useState<TypeOfArrayItem<
@@ -163,17 +171,7 @@ const DiscoverPackagesPage: FC = () => {
     }, [fetchedPackages]);
 
     return (
-        <Box display="flex" flexDirection="column" flex={1}>
-            <Box
-                display="flex"
-                width="100%"
-                paddingY={1}
-                flexDirection="column"
-                alignItems="center"
-                mb={2}
-            >
-                <Typography variant="h4">Discover AUR packages</Typography>
-            </Box>
+        <>
             <Box
                 display="flex"
                 flexDirection="column"
@@ -194,6 +192,8 @@ const DiscoverPackagesPage: FC = () => {
                             label="Search for AUR packages"
                             variant="filled"
                             fullWidth
+                            focused
+                            autoFocus
                             size="small"
                             InputProps={{
                                 endAdornment: loading ? (
@@ -202,15 +202,10 @@ const DiscoverPackagesPage: FC = () => {
                             }}
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
-                            error={Boolean(error)}
-                            helperText={error}
                         />
                     </FullWidthForm>
                     {lgUp && moreThanOnePackageAvailable ? (
                         <ToggleButtonGroup
-                            sx={{
-                                alignSelf: 'flex-start',
-                            }}
                             value={viewMode}
                             exclusive
                             onChange={(_, newValue) => {
@@ -218,7 +213,6 @@ const DiscoverPackagesPage: FC = () => {
                                     setViewMode(newValue);
                                 }
                             }}
-                            size="small"
                         >
                             <ToggleButton value="list">
                                 <FormatListBulletedRoundedIcon />
@@ -241,8 +235,8 @@ const DiscoverPackagesPage: FC = () => {
                 onClose={() => setSelectedPackage(null)}
                 pkg={selectedPackage}
             />
-        </Box>
+        </>
     );
 };
 
-export default DiscoverPackagesPage;
+export default DiscoverPackageContent;

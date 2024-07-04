@@ -23,7 +23,7 @@ CREATE TABLE "AurPackageLicense" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "packageId" INTEGER NOT NULL,
     "license" TEXT NOT NULL,
-    CONSTRAINT "AurPackageLicense_packageId_fkey" FOREIGN KEY ("packageId") REFERENCES "AurPackage" ("packageId") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "AurPackageLicense_packageId_fkey" FOREIGN KEY ("packageId") REFERENCES "AurPackage" ("packageId") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -31,7 +31,7 @@ CREATE TABLE "AurDependency" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "packageId" INTEGER NOT NULL,
     "packageName" TEXT NOT NULL,
-    CONSTRAINT "AurDependency_packageId_fkey" FOREIGN KEY ("packageId") REFERENCES "AurPackage" ("packageId") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "AurDependency_packageId_fkey" FOREIGN KEY ("packageId") REFERENCES "AurPackage" ("packageId") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -39,7 +39,7 @@ CREATE TABLE "AurMakeDependency" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "packageId" INTEGER NOT NULL,
     "packageName" TEXT NOT NULL,
-    CONSTRAINT "AurMakeDependency_packageId_fkey" FOREIGN KEY ("packageId") REFERENCES "AurPackage" ("packageId") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "AurMakeDependency_packageId_fkey" FOREIGN KEY ("packageId") REFERENCES "AurPackage" ("packageId") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -53,7 +53,7 @@ CREATE TABLE "AurPackageCoMaintainer" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "packageId" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
-    CONSTRAINT "AurPackageCoMaintainer_packageId_fkey" FOREIGN KEY ("packageId") REFERENCES "AurPackage" ("packageId") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "AurPackageCoMaintainer_packageId_fkey" FOREIGN KEY ("packageId") REFERENCES "AurPackage" ("packageId") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -61,7 +61,7 @@ CREATE TABLE "AurPackageVersion" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "packageId" TEXT NOT NULL,
     "version" TEXT NOT NULL,
-    CONSTRAINT "AurPackageVersion_packageId_fkey" FOREIGN KEY ("packageId") REFERENCES "AurPackage" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "AurPackageVersion_packageId_fkey" FOREIGN KEY ("packageId") REFERENCES "AurPackage" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable

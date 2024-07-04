@@ -4,16 +4,16 @@ import { memo, useMemo } from 'react';
 import UndrawApplications from '@public/undraw/applications.svg';
 import UndrawNoData from '@public/undraw/no_data.svg';
 
-import type { TypeOfArrayItem } from '@/types';
+import DiscoverPackagesListItem from '@/app/(main)/discover/_components/DiscoverPackagesListItem';
 
-import type { PackagesPageViewModes } from '@/content/DiscoverPackagesPage';
-import DiscoverPackagesListItem from '@/content/DiscoverPackagesPage/DiscoverPackagesListItem';
+import type { ListViewModes, TypeOfArrayItem } from '@/types';
+
 import type { SearchPackageReturnType } from '@/lib/fetcher';
 
 import { Box, Typography } from '@mui/material';
 
 export interface DiscoverPackageListProps {
-    viewMode: PackagesPageViewModes;
+    viewMode: ListViewModes;
     fetchedPackages?: SearchPackageReturnType;
     setSelectedPackage: (
         pkg: TypeOfArrayItem<SearchPackageReturnType['results']>,
@@ -46,7 +46,8 @@ const DiscoverPackageList: FC<DiscoverPackageListProps> = ({
             {fetchedPackages?.results ? (
                 <>
                     {fetchedPackages.results.length ? (
-                        fetchedPackages.results.map(pkg => (
+                        // TODO: for now, hard limit to 100 results
+                        fetchedPackages.results.slice(0, 100).map(pkg => (
                             <Box
                                 width={viewMode === 'list' ? '100%' : 'auto'}
                                 key={pkg.Name}
@@ -81,6 +82,7 @@ const DiscoverPackageList: FC<DiscoverPackageListProps> = ({
                             gap={7}
                             padding={8}
                         >
+                            <UndrawNoData height="50%" width="100%" />
                             <Box
                                 display="flex"
                                 flexDirection="column"
@@ -98,7 +100,6 @@ const DiscoverPackageList: FC<DiscoverPackageListProps> = ({
                                     Try searching for something else
                                 </Typography>
                             </Box>
-                            <UndrawNoData height="50%" width="100%" />
                         </Box>
                     )}
                 </>
@@ -114,6 +115,7 @@ const DiscoverPackageList: FC<DiscoverPackageListProps> = ({
                     gap={7}
                     padding={8}
                 >
+                    <UndrawApplications height="50%" width="100%" />
                     <Box
                         display="flex"
                         flexDirection="column"
@@ -121,14 +123,13 @@ const DiscoverPackageList: FC<DiscoverPackageListProps> = ({
                         justifyContent="center"
                     >
                         <Typography variant="h4" align="center" gutterBottom>
-                            No packages fetched
+                            Search for packages
                         </Typography>
                         <Typography variant="body1" align="center">
                             Enter a search term into the field above and press
                             enter to search for packages
                         </Typography>
                     </Box>
-                    <UndrawApplications height="50%" width="100%" />
                 </Box>
             )}
         </Box>

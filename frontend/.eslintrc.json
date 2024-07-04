@@ -25,6 +25,7 @@
     "jest/globals": true
   },
   "rules": {
+    "import/prefer-default-export": "off",
     "prettier/prettier": [
       "error",
       {

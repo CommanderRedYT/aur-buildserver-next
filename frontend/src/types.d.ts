@@ -4,3 +4,5 @@ export interface CommonModalProps {
     open: boolean;
     onClose: () => void;
 }
+
+export type ListViewModes = 'list' | 'grid';

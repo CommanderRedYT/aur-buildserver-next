@@ -60,6 +60,17 @@
                     "name"
                 ]
             },
+            "PackageByIdBody": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id"
+                ]
+            },
             "PackageFromDatabase": {
                 "type": "object",
                 "properties": {
@@ -142,6 +153,43 @@
         }
     },
     "paths": {
+        "/api/packages/remove": {
+            "post": {
+                "summary": "Remove a package from database",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PackageByIdBody"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/packages/add": {
             "post": {
                 "summary": "Add a new package to database",

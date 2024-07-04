@@ -5,8 +5,8 @@ import { useState } from 'react';
 
 import { SnackbarProvider } from 'notistack';
 
-import Header from '@/components/layout/Header';
-import Sidebar from '@/components/layout/Sidebar';
+import Header from '@/layout/Header';
+import Sidebar from '@/layout/Sidebar';
 
 import { Box, Container, styled } from '@mui/material';
 
@@ -41,7 +41,6 @@ const RootLayout: FC<PropsWithChildren> = props => {
                 <Sidebar
                     isMobileSidebarOpen={isMobileSidebarOpen}
                     onSidebarClose={() => setIsMobileSidebarOpen(false)}
-                    toggleMobileSidebar={() => setIsMobileSidebarOpen(true)}
                 />
                 <PageWrapper className="page-wrapper">
                     <Header
