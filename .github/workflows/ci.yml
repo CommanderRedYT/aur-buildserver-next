@@ -15,6 +15,9 @@ jobs:
         command: ["lint", "typecheck"]
 
     name: Run yarn ${{ matrix.command }} in ${{ matrix.subfolder }}/
+    defaults:
+      run:
+        working-directory: ${{ matrix.subfolder }}
     steps:
       - uses: actions/checkout@v4
 
@@ -23,11 +26,10 @@ jobs:
         with:
           node-version: '20'
           cache: 'yarn'
+          cache-dependency-path: ${{ matrix.subfolder }}/yarn.lock
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-        working-directory: ${{ matrix.subfolder }}
 
       - name: Run ${{ matrix.command }}
         run: yarn ${{ matrix.command }}
-        working-directory: ${{ matrix.subfolder }}
