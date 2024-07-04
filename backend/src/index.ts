@@ -1,8 +1,8 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import fs from 'fs';
-import path from 'path';
 import morgan from 'morgan';
+import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 
 import api from '@/api';
