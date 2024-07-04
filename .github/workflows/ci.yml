@@ -1,0 +1,33 @@
+name: Continuous Integration
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      # two-dimensional matrix. first for "frontend"/"backend" and second for "lint"/"typecheck"
+      matrix:
+        subfolder: ["frontend", "backend"]
+        command: ["lint", "typecheck"]
+
+    name: Run yarn ${{ matrix.command }} in ${{ matrix.subfolder }}/
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        working-directory: ${{ matrix.subfolder }}
+
+      - name: Run ${{ matrix.command }}
+        run: yarn ${{ matrix.command }}
+        working-directory: ${{ matrix.subfolder }}
