@@ -25,8 +25,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: ${{ matrix.subfolder }}/yarn.lock
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ matrix.subfolder }}/node_modules
+          key: ${{ runner.os }}-${{ matrix.subfolder }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+              ${{ runner.os }}-${{ matrix.subfolder }}-yarn-
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
