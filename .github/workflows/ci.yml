@@ -33,6 +33,7 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.subfolder }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
               ${{ runner.os }}-${{ matrix.subfolder }}-yarn-
+          save-always: true
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
