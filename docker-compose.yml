@@ -1,28 +1,45 @@
 services:
   backend-dev:
-    image: "ghcr.io/commanderredyt/node:20.15.0-archlinux"
+    build:
+      context: backend
+      dockerfile: ./development.Dockerfile
     container_name: backend-dev
+    restart: unless-stopped
     working_dir: /app
     user: "1000:1000"
     volumes:
       - ./backend:/app
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - "5768:5768"
     environment:
       - BACKEND_LISTEN_PORT=5768
       - BACKEND_LISTEN_HOST=0.0.0.0
+      - BACKEND_REDIS_HOST=redis-dev
     command: yarn dev
     tty: true
+
+  redis-dev:
+    image: redis:alpine
+    container_name: redis-dev
+    restart: unless-stopped
+    user: "1000:1000"
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./backend/data/redis:/data
 
   frontend-dev:
     image: node:20-alpine
     container_name: frontend-dev
+    restart: unless-stopped
     working_dir: /app
     user: "1000:1000"
     volumes:
       - ./frontend:/app
     environment:
       - CONFIG_API_URL=http://backend-dev:5768
+      - CONFIG_PUBLIC_URL=http://localhost:3042
     ports:
-      - "3000:3000"
-    command: yarn dev
+      - "3042:3042"
+    command: yarn dev -p 3042

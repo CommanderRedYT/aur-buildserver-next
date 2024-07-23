@@ -10,16 +10,14 @@ import stringAvatar from '@/lib/stringAvatar';
 
 import AddIcon from '@mui/icons-material/Add';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import {
-    Avatar,
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    CardHeader,
-    styled,
-    Typography,
-} from '@mui/material';
+import { styled } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Typography from '@mui/material/Typography';
 
 export interface DiscoverPackagesAurListProps {
     pkg: TypeOfArrayItem<SearchPackageReturnType['results']>;

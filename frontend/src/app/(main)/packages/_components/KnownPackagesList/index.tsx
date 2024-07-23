@@ -12,39 +12,38 @@ import UndrawSearching from '@public/undraw/searching.svg';
 
 import KnownPackageMenu from '@/app/(main)/packages/_components/KnownPackageMenu';
 import KnownPackagesListItem from '@/app/(main)/packages/_components/KnownPackagesListItem';
-import type {
-    KnownPackagesData,
-    KnownPackagesDataItem,
-} from '@/app/(main)/packages/page';
 
 import type { ListViewModes } from '@/types';
 
 import FullWidthForm from '@/components/FullWidthForm';
 
+import type {
+    KnownPackagesData,
+    KnownPackagesDataItem,
+} from '@/lib/api/getKnownPackages';
+
 import FormatListBulletedRoundedIcon from '@mui/icons-material/FormatListBulletedRounded';
 import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
 import SearchIcon from '@mui/icons-material/Search';
 import type { Theme } from '@mui/material';
-import {
-    Box,
-    Button,
-    CircularProgress,
-    Menu,
-    TextField,
-    ToggleButton,
-    ToggleButtonGroup,
-    Typography,
-    useMediaQuery,
-} from '@mui/material';
+import { useMediaQuery } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Menu from '@mui/material/Menu';
+import TextField from '@mui/material/TextField';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import Typography from '@mui/material/Typography';
 
 export interface KnownPackagesListProps {
-    knownPackagesData: KnownPackagesData;
+    knownPackagesData: KnownPackagesData | null;
 }
 
 const KnownPackagesList: FC<KnownPackagesListProps> = ({
     knownPackagesData,
 }) => {
-    const [viewMode, setViewMode] = useState<ListViewModes>('list');
+    const [viewMode, setViewMode] = useState<ListViewModes>('grid');
 
     const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -101,10 +100,13 @@ const KnownPackagesList: FC<KnownPackagesListProps> = ({
         setMenuAnchorEl(null);
     };
 
-    const computedViewMode = useMemo(
-        () => (lgUp ? viewMode : 'list'),
-        [lgUp, viewMode],
-    );
+    const computedViewMode = useMemo(() => {
+        if (!knownPackagesData?.length) {
+            return 'list';
+        }
+
+        return lgUp ? viewMode : 'list';
+    }, [knownPackagesData?.length, lgUp, viewMode]);
 
     if (knownPackagesData === null) {
         return (
@@ -143,6 +145,7 @@ const KnownPackagesList: FC<KnownPackagesListProps> = ({
                                 }}
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
+                                disabled
                             />
                         </FullWidthForm>
                         {lgUp ? (
@@ -214,7 +217,7 @@ const KnownPackagesList: FC<KnownPackagesListProps> = ({
                                 gap={7}
                                 padding={8}
                             >
-                                <UndrawSearching height="50%" width="100%" />
+                                <UndrawSearching height="50%" width="50%" />
                                 <Box
                                     display="flex"
                                     flexDirection="column"
@@ -233,8 +236,9 @@ const KnownPackagesList: FC<KnownPackagesListProps> = ({
                                             variant="body1"
                                             align="center"
                                         >
-                                            To add a package, search for it in
-                                            under discovery
+                                            To get started, add some packages to
+                                            your package list. Builds should
+                                            then start automatically.
                                         </Typography>
                                     </Box>
                                     <Box width="100%">
@@ -265,7 +269,7 @@ const KnownPackagesList: FC<KnownPackagesListProps> = ({
                         gap={7}
                         padding={8}
                     >
-                        <UndrawApplications height="50%" width="100%" />
+                        <UndrawApplications height="50%" width="50%" />
                         <Box
                             display="flex"
                             flexDirection="column"

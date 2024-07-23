@@ -2,45 +2,13 @@ import type { FC } from 'react';
 
 import KnownPackagesList from '@/app/(main)/packages/_components/KnownPackagesList';
 
-import backendFetcherApi from '@/lib/fetcher';
+import getKnownPackages from '@/lib/api/getKnownPackages';
 
-import { Box, Typography } from '@mui/material';
-
-const knownPackagesEndpoint = backendFetcherApi('/api/packages/list')
-    .method('get')
-    .create();
-
-export type KnownPackagesDataItem = Awaited<
-    ReturnType<typeof knownPackagesEndpoint>
->['data']['data'][0];
-
-export type KnownPackagesData =
-    | Awaited<ReturnType<typeof knownPackagesEndpoint>>['data']['data']
-    | null;
-
-const getKnownPackages = async (): Promise<KnownPackagesData> => {
-    const knownPackages = await knownPackagesEndpoint(
-        {},
-        {
-            cache: 'no-store',
-        },
-    );
-
-    if (
-        !knownPackages ||
-        !knownPackages.ok ||
-        !knownPackages.data ||
-        !knownPackages.data.success ||
-        !knownPackages.data.data
-    ) {
-        return null;
-    }
-
-    return knownPackages.data.data;
-};
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 const KnownPackagesPage: FC = async () => {
-    const knownPackagesData = await getKnownPackages();
+    const [knownPackagesData] = await getKnownPackages();
 
     return (
         <Box display="flex" flexDirection="column" flex={1}>

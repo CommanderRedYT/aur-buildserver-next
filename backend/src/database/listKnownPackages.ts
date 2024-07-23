@@ -24,6 +24,16 @@ const listKnownPackages: ListKnownPackages = async () => {
             currentVersion: true,
             urlPath: true,
             url: true,
+
+            dependencies: {
+                select: {
+                    packageName: true,
+                },
+                where: {
+                    isAur: true,
+                },
+                distinct: ['packageName'],
+            },
         },
     });
 
@@ -32,6 +42,7 @@ const listKnownPackages: ListKnownPackages = async () => {
         lastModifiedDatabaseEntry: i.lastModifiedDatabaseEntry.toISOString(),
         firstSubmitted: i.firstSubmitted.toISOString(),
         lastModified: i.lastModified.toISOString(),
+        dependencies: i.dependencies.map((dep) => dep.packageName),
     }));
 };
 

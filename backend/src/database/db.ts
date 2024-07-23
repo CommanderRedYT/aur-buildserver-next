@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const prismaClientSingleton = () => new PrismaClient({
-    log: ['query'],
+    // log: process.env.NODE_ENV === 'development' ? ['query'] : undefined,
 });
 
 declare global {

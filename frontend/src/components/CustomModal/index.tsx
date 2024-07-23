@@ -3,7 +3,11 @@ import React from 'react';
 
 import CloseIcon from '@mui/icons-material/Close';
 import type { ModalProps } from '@mui/material';
-import { Box, IconButton, Modal, styled, Typography } from '@mui/material';
+import { styled } from '@mui/material';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
 
 const ModalContentWrapper = styled(Box, {
     shouldForwardProp: propName => propName !== 'overrideWidth',
@@ -33,6 +37,7 @@ export interface CustomModalProps extends Omit<ModalProps, 'children'> {
     showCloseButton?: boolean;
     overrideWidth?: number;
     children: React.ReactNode;
+    leftIcon?: React.ReactNode;
 }
 
 const CustomModal: FC<CustomModalProps> = ({
@@ -40,6 +45,7 @@ const CustomModal: FC<CustomModalProps> = ({
     showCloseButton,
     title,
     overrideWidth,
+    leftIcon,
     ...props
 }) => (
     <Modal
@@ -58,11 +64,14 @@ const CustomModal: FC<CustomModalProps> = ({
                 justifyContent="space-between"
                 flex={1}
             >
-                {title ? (
-                    <Box>
-                        <Typography variant="h5">{title}</Typography>
-                    </Box>
-                ) : null}
+                <Box display="flex" gap={1} alignItems="center">
+                    {leftIcon ? <Box>{leftIcon}</Box> : null}
+                    {title ? (
+                        <Box>
+                            <Typography variant="h5">{title}</Typography>
+                        </Box>
+                    ) : null}
+                </Box>
                 {showCloseButton && typeof props.onClose !== 'undefined' ? (
                     <Box>
                         <IconButton

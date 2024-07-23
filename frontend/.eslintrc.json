@@ -15,7 +15,8 @@
     "no-relative-import-paths",
     "prettier",
     "import",
-    "simple-import-sort"
+    "simple-import-sort",
+    "mui-path-imports"
   ],
   "ignorePatterns": ["node_modules/", "dist", "public", "src/generated"],
   "parserOptions": {
@@ -25,6 +26,9 @@
     "jest/globals": true
   },
   "rules": {
+    "no-nested-ternary": "off",
+    "no-confusing-arrow": "off",
+    "mui-path-imports/mui-path-imports": "error",
     "import/prefer-default-export": "off",
     "prettier/prettier": [
       "error",
@@ -41,6 +45,7 @@
         "importOrderSeparation": true
       }
     ],
+    "function-paren-newline": "off",
     "implicit-arrow-linebreak": "off",
     "object-curly-newline": "off",
     "operator-linebreak": "off",

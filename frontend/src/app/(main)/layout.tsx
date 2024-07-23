@@ -8,13 +8,18 @@ import { SnackbarProvider } from 'notistack';
 import Header from '@/layout/Header';
 import Sidebar from '@/layout/Sidebar';
 
-import { Box, Container, styled } from '@mui/material';
+import { styled } from '@mui/material';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 
 const MainWrapper = styled('div')(({ theme }) => ({
     display: 'flex',
     minHeight: '100vh',
     width: '100%',
-    backgroundColor: theme.palette.grey[200],
+    backgroundColor: theme.vars.palette.grey[200],
+    ...theme.applyStyles('dark', {
+        backgroundColor: theme.vars.palette.grey[900],
+    }),
 }));
 
 const PageWrapper = styled('div')({

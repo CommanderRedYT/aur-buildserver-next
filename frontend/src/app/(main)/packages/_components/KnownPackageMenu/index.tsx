@@ -11,13 +11,10 @@ import useConfirmationModal from '@/hooks/useConfirmationModal';
 import removePackageFromPackageList from '@/lib/api/removePackageFromPackageList';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import {
-    ListItemIcon,
-    ListItemText,
-    MenuItem,
-    MenuList,
-    Paper,
-} from '@mui/material';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import MenuItem from '@mui/material/MenuItem';
+import MenuList from '@mui/material/MenuList';
 
 export interface KnownPackageMenuProps {
     open: boolean;
@@ -45,7 +42,11 @@ const KnownPackageMenu: FC<KnownPackageMenuProps> = ({ onClose, pkg }) => {
                 router.refresh();
             })
             .catch(error => {
-                enqueueSnackbar(error.message, { variant: 'error' });
+                if (!error.data) {
+                    enqueueSnackbar('Failed to delete package', { variant: 'error' });
+                    return;
+                }
+                enqueueSnackbar(error.data.message, { variant: 'error' });
             });
     };
 
@@ -63,16 +64,14 @@ const KnownPackageMenu: FC<KnownPackageMenuProps> = ({ onClose, pkg }) => {
 
     return (
         <>
-            <Paper sx={{ width: 320, maxWidth: '100%' }}>
-                <MenuList>
-                    <MenuItem onClick={confirmDeleteModal.open}>
-                        <ListItemIcon>
-                            <DeleteIcon fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText>Delete</ListItemText>
-                    </MenuItem>
-                </MenuList>
-            </Paper>
+            <MenuList sx={{ width: 210, maxWidth: '100%' }}>
+                <MenuItem onClick={confirmDeleteModal.open}>
+                    <ListItemIcon>
+                        <DeleteIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Delete</ListItemText>
+                </MenuItem>
+            </MenuList>
             <confirmDeleteModal.Component />
         </>
     );

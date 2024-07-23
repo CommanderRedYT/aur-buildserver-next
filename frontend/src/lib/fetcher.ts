@@ -23,3 +23,11 @@ export type SearchPackageReturnType = Required<
 export type FetchPkgbuildReturnType = Required<
     OpReturnType<paths['/api/aur/fetchPkgbuild/{packageName}']['get']>
 >['data'];
+
+export type FetchDetailedReturnType = Required<
+    OpReturnType<paths['/api/aur/fetchDetailed/{packageName}']['get']>
+>['data'];
+
+export type FetchInfoReturnType = Required<
+    OpReturnType<paths['/api/info']['get']>
+>['data'];

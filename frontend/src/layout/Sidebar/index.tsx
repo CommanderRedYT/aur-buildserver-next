@@ -5,7 +5,9 @@ import Logo from '@/components/Logo';
 import SidebarItems from '@/layout/Sidebar/SidebarItems';
 
 import type { Theme } from '@mui/material';
-import { Box, Drawer, useMediaQuery } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
 
 export interface SidebarProps {
     isMobileSidebarOpen: boolean;

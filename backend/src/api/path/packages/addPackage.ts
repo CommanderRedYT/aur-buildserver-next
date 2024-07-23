@@ -4,7 +4,13 @@ import { Prisma } from '@prisma/client';
 
 import fetcherApi from '@/aur/fetcher';
 import { prisma } from '@/database/db';
-import { errorResponse, requireBodyParams, successResponse } from '@/helper/api';
+import {
+    errorResponse, ErrorResponseThrowable, requireBodyParams, successResponse,
+} from '@/helper/api';
+import {
+    existsInAur, stripPkgName,
+} from '@/helper/aur';
+import taskQueue from '@/taskmanager';
 
 const requiredParams = ['name'] as const;
 
@@ -18,154 +24,157 @@ export default async function addPackage(req: Request, res: Response): Promise<v
 
     const lookupPackageEndpoint = fetcherApi('/rpc/v5/info/{arg}').method('get').create();
 
+    const alreadyBuildPackages = await prisma.aurPackage.findMany({
+        select: {
+            name: true,
+        },
+    });
+
+    const packageList: string[] = alreadyBuildPackages.map((pkg) => pkg.name);
+
     try {
-        const response = await lookupPackageEndpoint({
-            arg: params.name,
-        });
+        const handleAddPackage = async (packageName: string): Promise<void> => {
+            if (packageList.includes(packageName)) {
+                // dependency cycle
+                console.log('Dependency cycle detected', packageName);
+                return;
+            }
 
-        if (!response.ok) {
-            errorResponse(res, 500);
-            return;
-        }
+            packageList.push(packageName);
 
-        if (!response.data.results?.length) {
-            errorResponse(res, 404, 'Package not found');
-            return;
-        }
+            console.log('Adding package', packageName);
 
-        if (response.data.results.length !== 1 || !response.data.results[0]) {
-            errorResponse(res, 500);
-            return;
-        }
-
-        const {
-            ID,
-            Name,
-            Description,
-            PackageBaseID,
-            PackageBase,
-            Maintainer,
-            NumVotes,
-            Popularity,
-            FirstSubmitted,
-            LastModified,
-            OutOfDate,
-            Version,
-            URLPath,
-            URL,
-            License,
-            Depends,
-            MakeDepends,
-            Keywords,
-            CoMaintainers,
-        } = response.data.results[0];
-
-        if (
-            typeof ID === 'undefined'
-            || typeof Name === 'undefined'
-            || typeof Description === 'undefined'
-            || typeof PackageBaseID === 'undefined'
-            || typeof PackageBase === 'undefined'
-            || typeof Maintainer === 'undefined'
-            || typeof NumVotes === 'undefined'
-            || typeof Popularity === 'undefined'
-            || typeof FirstSubmitted === 'undefined'
-            || typeof LastModified === 'undefined'
-            || typeof OutOfDate === 'undefined'
-            || typeof Version === 'undefined'
-            || typeof URLPath === 'undefined'
-            || typeof URL === 'undefined'
-        ) {
-            errorResponse(res, 500, 'Invalid package data', undefined, {
-                ID: `ID: ${typeof ID}`,
-                Name: `Name: ${typeof Name}`,
-                Description: `Description: ${typeof Description}`,
-                PackageBaseID: `PackageBaseID: ${typeof PackageBaseID}`,
-                PackageBase: `PackageBase: ${typeof PackageBase}`,
-                Maintainer: `Maintainer: ${typeof Maintainer}`,
-                NumVotes: `NumVotes: ${typeof NumVotes}`,
-                Popularity: `Popularity: ${typeof Popularity}`,
-                FirstSubmitted: `FirstSubmitted: ${typeof FirstSubmitted}`,
-                LastModified: `LastModified: ${typeof LastModified}`,
-                OutOfDate: `OutOfDate: ${typeof OutOfDate}`,
-                Version: `Version: ${typeof Version}`,
-                URLPath: `URLPath: ${typeof URLPath}`,
-                URL: `URL: ${typeof URL}`,
+            const response = await lookupPackageEndpoint({
+                arg: packageName,
             });
-            return;
-        }
 
-        await prisma.aurPackage.create({
-            data: {
-                packageId: ID,
-                name: Name,
-                description: Description,
-                packageBaseId: PackageBaseID,
-                packageBase: PackageBase,
-                maintainer: Maintainer,
-                votes: NumVotes,
-                popularity: Popularity,
-                firstSubmitted: (new Date(FirstSubmitted * 1000)).toISOString(),
-                lastModified: (new Date(LastModified * 1000)).toISOString(),
-                flaggedOutOfDate: OutOfDate !== null,
-                currentVersion: Version,
-                urlPath: URLPath,
-                url: URL,
-                // arrays
-                ...(typeof License !== 'undefined' ? {
-                    licenses: {
-                        createMany: {
-                            data: License.map((item: string) => ({
-                                license: item,
-                            })),
-                        },
-                    },
-                } : {}),
-                ...(typeof Depends !== 'undefined' ? {
-                    dependencies: {
-                        createMany: {
-                            data: Depends.map((item: string) => ({
-                                packageName: item,
-                            })),
-                        },
-                    },
-                } : {}),
-                ...(typeof MakeDepends !== 'undefined' ? {
-                    makeDependencies: {
-                        createMany: {
-                            data: MakeDepends.map((item: string) => ({
-                                packageName: item,
-                            })),
-                        },
-                    },
-                } : {}),
-                ...(typeof CoMaintainers !== 'undefined' ? {
-                    coMaintainers: {
-                        createMany: {
-                            data: CoMaintainers.map((item: string) => ({
-                                name: item,
-                            })),
-                        },
-                    },
-                } : {}),
-                ...(typeof Keywords !== 'undefined' ? {
-                    keywords: {
-                        connectOrCreate: Keywords.map((item: string) => ({
-                            where: {
-                                keyword: item,
+            if (!response.ok) {
+                throw new ErrorResponseThrowable(500, 'Failed to get AUR info', response);
+            }
+
+            if (!response.data.results?.length) {
+                throw new ErrorResponseThrowable(404, 'Package not found', response);
+            }
+
+            if (response.data.results.length !== 1 || !response.data.results[0]) {
+                throw new ErrorResponseThrowable(500, 'Invalid package data', response);
+            }
+
+            const packageData = response.data.results[0];
+
+            const {
+                ID,
+                Name,
+                Description,
+                PackageBaseID,
+                PackageBase,
+                Maintainer,
+                NumVotes,
+                Popularity,
+                FirstSubmitted,
+                LastModified,
+                OutOfDate,
+                Version,
+                URLPath,
+                URL,
+            } = packageData;
+
+            if (
+                typeof ID === 'undefined'
+                || typeof Name === 'undefined'
+                || typeof Description === 'undefined'
+                || typeof PackageBaseID === 'undefined'
+                || typeof PackageBase === 'undefined'
+                || typeof Maintainer === 'undefined'
+                || typeof NumVotes === 'undefined'
+                || typeof Popularity === 'undefined'
+                || typeof FirstSubmitted === 'undefined'
+                || typeof LastModified === 'undefined'
+                || typeof OutOfDate === 'undefined'
+                || typeof Version === 'undefined'
+                || typeof URLPath === 'undefined'
+                || typeof URL === 'undefined'
+            ) {
+                throw new ErrorResponseThrowable(500, 'Invalid package data', {
+                    ID: `ID: ${typeof ID}`,
+                    Name: `Name: ${typeof Name}`,
+                    Description: `Description: ${typeof Description}`,
+                    PackageBaseID: `PackageBaseID: ${typeof PackageBaseID}`,
+                    PackageBase: `PackageBase: ${typeof PackageBase}`,
+                    Maintainer: `Maintainer: ${typeof Maintainer}`,
+                    NumVotes: `NumVotes: ${typeof NumVotes}`,
+                    Popularity: `Popularity: ${typeof Popularity}`,
+                    FirstSubmitted: `FirstSubmitted: ${typeof FirstSubmitted}`,
+                    LastModified: `LastModified: ${typeof LastModified}`,
+                    OutOfDate: `OutOfDate: ${typeof OutOfDate}`,
+                    Version: `Version: ${typeof Version}`,
+                    URLPath: `URLPath: ${typeof URLPath}`,
+                    URL: `URL: ${typeof URL}`,
+                });
+            }
+
+            const dependencies: string[] = [
+                ...(typeof packageData.Depends !== 'undefined' ? packageData.Depends : []),
+                ...(typeof packageData.MakeDepends !== 'undefined' ? packageData.MakeDepends : []),
+                ...(typeof packageData.CheckDepends !== 'undefined' ? packageData.CheckDepends : []),
+                ...(typeof packageData.OptDepends !== 'undefined' ? packageData.OptDepends : []),
+            ];
+
+            const mappedDependencyPromises = dependencies.map(async (dep) => ({
+                packageName: dep,
+                strippedPackageName: stripPkgName(dep),
+                isAur: await existsInAur(dep),
+            }));
+
+            const mappedDependencies = await Promise.all(mappedDependencyPromises);
+
+            const aurDependencyPromises = mappedDependencies.filter((dep) => dep.isAur).map(async (dep) => handleAddPackage(stripPkgName(dep.packageName)));
+
+            await Promise.all(aurDependencyPromises);
+
+            const prismaResult = await prisma.aurPackage.create({
+                data: {
+                    packageId: ID,
+                    name: Name,
+                    description: Description,
+                    packageBaseId: PackageBaseID,
+                    packageBase: PackageBase,
+                    maintainer: Maintainer,
+                    votes: NumVotes,
+                    popularity: Popularity,
+                    firstSubmitted: (new Date(FirstSubmitted * 1000)).toISOString(),
+                    lastModified: (new Date(LastModified * 1000)).toISOString(),
+                    flaggedOutOfDate: OutOfDate !== null,
+                    currentVersion: Version,
+                    urlPath: URLPath,
+                    url: URL,
+                    ...(mappedDependencies.length > 0 ? {
+                        dependencies: {
+                            createMany: {
+                                data: mappedDependencies,
                             },
-                            create: {
-                                keyword: item,
-                            },
-                        })),
-                    },
-                } : {}),
-            },
-        });
+                        },
+                    } : {}),
+                },
+                select: {
+                    name: true,
+                    packageId: true,
+                },
+            });
+
+            await taskQueue.add('handleNewPackage', {
+                packageName: Name,
+                packageId: prismaResult.packageId,
+            });
+        };
+
+        await handleAddPackage(stripPkgName(params.name));
 
         successResponse<'/api/packages/add'>(res);
     } catch (e) {
-        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e instanceof ErrorResponseThrowable) {
+            errorResponse(res, 500, e);
+        } else if (e instanceof Prisma.PrismaClientKnownRequestError) {
             if (e.code === 'P2002') {
                 errorResponse(res, 409, 'Package already exists', undefined, {
                     message: e.message,

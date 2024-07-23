@@ -2,7 +2,8 @@ import type { FC } from 'react';
 
 import type { SubheaderMenuItem } from '@/constants/sidebar';
 
-import { ListSubheader, styled } from '@mui/material';
+import { styled } from '@mui/material';
+import ListSubheader from '@mui/material/ListSubheader';
 
 export interface NavGroupProps {
     item: SubheaderMenuItem;

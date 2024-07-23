@@ -1,6 +1,6 @@
-const requiredEnv = ['CONFIG_API_URL'];
+const requiredEnv = ['CONFIG_API_URL', 'CONFIG_PUBLIC_URL'];
 
-if (process.env.npm_lifecycle_event !== 'lint') {
+if (process.env.npm_lifecycle_event && !process.env.npm_lifecycle_event.includes('lint')) {
     for (const env of requiredEnv) {
         if (!process.env[env]) {
             throw new Error(`Environment variable ${env} is required`);
@@ -19,6 +19,7 @@ const nextConfig = {
     } : {},
     env: {
         CONFIG_API_URL: process.env.CONFIG_API_URL,
+        CONFIG_PUBLIC_URL: process.env.CONFIG_PUBLIC_URL,
     },
     rewrites: async () => {
         return [
@@ -29,6 +30,18 @@ const nextConfig = {
             {
                 source: '/api/packages/:path*',
                 destination: `${process.env.CONFIG_API_URL}/api/packages/:path*`,
+            },
+            {
+                source: '/repo/:path*',
+                destination: `${process.env.CONFIG_API_URL}/repo/:path*`,
+            },
+            {
+                source: '/api/builds/:path*',
+                destination: `${process.env.CONFIG_API_URL}/api/builds/:path*`,
+            },
+            {
+                source: '/api/gnupg/:path*',
+                destination: `${process.env.CONFIG_API_URL}/api/gnupg/:path*`,
             },
         ];
     },

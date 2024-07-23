@@ -4,6 +4,235 @@
  */
 
 export interface paths {
+    "/api/info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get information from the backend */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SuccessResponse"] & {
+                            data: components["schemas"]["InfoResponse"];
+                        };
+                    };
+                };
+                /** @description Error response */
+                default: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/builds/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all builds */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SuccessResponse"] & {
+                            data: components["schemas"]["BuildFromDatabase"][];
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/builds/details/{buildId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                buildId: string;
+            };
+            cookie?: never;
+        };
+        /** Get the log file of a build */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    buildId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SuccessResponse"] & {
+                            data: components["schemas"]["LogFileResponse"];
+                        };
+                    };
+                };
+                /** @description Error response */
+                default: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/gnupg/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all GnuPG keys */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SuccessResponse"] & {
+                            data: {
+                                id: string;
+                                keyId: string;
+                                accepted: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/gnupg/trust": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Trust a GnuPG key */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        keyId: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SuccessResponse"];
+                    };
+                };
+                /** @description Error response */
+                default: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/packages/remove": {
         parameters: {
             query?: never;
@@ -209,6 +438,60 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/aur/fetchDetailed/{packageName}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                packageName: components["parameters"]["packageName"];
+            };
+            cookie?: never;
+        };
+        /** Get detailed package information of an AUR package */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    packageName: components["parameters"]["packageName"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SuccessResponse"] & {
+                            data: components["schemas"]["InfoResult"] & {
+                                /** @description List of package names of dependencies etc. that are not from official repositories */
+                                aurPackages?: string[];
+                            };
+                        };
+                    };
+                };
+                /** @description Error response */
+                default: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/packages/list": {
         parameters: {
             query?: never;
@@ -293,6 +576,49 @@ export interface components {
             currentVersion: string;
             urlPath: string | null;
             url: string | null;
+            dependencies?: string[];
+        };
+        /** @description Server Information response */
+        InfoResponse: {
+            signingKeyId: string | null;
+        };
+        /** @description Information about a build from database */
+        BuildFromDatabase: {
+            id: string;
+            running: boolean;
+            /** Format: date-time */
+            startedAt: string;
+            /** Format: date-time */
+            finishedAt: string | null;
+            exitCode: number | null;
+            success: boolean | null;
+            version: {
+                pkgver: string;
+                pkgrel: string;
+                gitHash: string;
+            };
+            package: {
+                name: string;
+                id: string;
+            };
+        };
+        LogFile: string;
+        /** @description Response for log file */
+        LogFileResponse: {
+            logFileContents?: components["schemas"]["LogFile"];
+            logFile: string;
+            success: boolean | null;
+            /** Format: date-time */
+            startedAt: string;
+            /** Format: date-time */
+            finishedAt: string | null;
+            exitCode: number | null;
+            running: boolean;
+            version: {
+                pkgver?: string;
+                pkgrel?: string;
+                gitHash?: string;
+            };
         };
         BaseResult: {
             /** @description Number of search results */
@@ -330,6 +656,35 @@ export interface components {
         /** @description SearchResult contains a list of basic package information */
         SearchResult: components["schemas"]["BaseResult"] & {
             results?: components["schemas"]["PackageBasic"][];
+        };
+        /** @description Detailed package information */
+        PackageDetailed: components["schemas"]["PackageBasic"] & {
+            Submitter?: string;
+            /** @description From PKGBUILD `license` */
+            License?: string[];
+            /** @description From PKGBUILD `depends` */
+            Depends?: string[];
+            /** @description From PKGBUILD `makedepends` */
+            MakeDepends?: string[];
+            /** @description From PKGBUILD `optdepends` */
+            OptDepends?: string[];
+            /** @description From PKGBUILD `checkdepends` */
+            CheckDepends?: string[];
+            /** @description From PKGBUILD `provides` */
+            Provides?: string[];
+            /** @description From PKGBUILD `conflicts` */
+            Conflicts?: string[];
+            /** @description From PKGBUILD `replaces` */
+            Replaces?: string[];
+            /** @description From PKGBUILD `groups` */
+            Groups?: string[];
+            /** @description From PKGBUILD `keywords` */
+            Keywords?: string[];
+            CoMaintainers?: string[];
+        };
+        /** @description InfoResult contains a list of detailed package information */
+        InfoResult: components["schemas"]["BaseResult"] & {
+            results?: components["schemas"]["PackageDetailed"][];
         };
     };
     responses: never;

@@ -1,59 +1,46 @@
-import bodyParser from 'body-parser';
-import express from 'express';
-import fs from 'fs';
-import morgan from 'morgan';
-import path from 'path';
-import swaggerUi from 'swagger-ui-express';
-
-import api from '@/api';
 import config from '@/config';
+import markRunningAsFailed from '@/database/markRunningAsFailed';
+import { updatePacmanConfig } from '@/helper/pacman';
+import programExists from '@/helper/programExists';
+import { initializePacmanBuild } from '@/pacman/build';
+import pacmanLock from '@/pacman/lock';
+import { initializePacmanRepo } from '@/pacman/repo';
+import taskQueue from '@/taskmanager';
+import webApp from '@/web';
 
-console.info('Configured with NODE_ENV', process.env.NODE_ENV);
+const requiredCommands = ['git', 'makepkg', 'repo-add', 'sudo', 'gpg', 'pacman', 'pacman-key', 'fuser'];
 
-const swaggerDocument = (() => {
-    try {
-        return JSON.parse(fs.readFileSync('aur-buildserver-next-backend.json', 'utf8'));
-    } catch (e) {
-        console.error('Failed to load swagger.json');
-        return {};
+const main = async (): Promise<void> => {
+    console.log('Main program started');
+
+    const missingCommands = await Promise.all(requiredCommands.map(async (command) => {
+        const exists = await programExists(command);
+
+        return exists ? null : command;
+    }));
+
+    if (missingCommands.some((command) => command !== null)) {
+        console.error('Missing required commands', missingCommands);
+        process.exit(1);
     }
-})();
 
-const app = express();
+    await markRunningAsFailed();
 
-app.disable('x-powered-by');
+    await initializePacmanRepo();
+    await initializePacmanBuild();
 
-app.use(morgan('dev'));
+    await updatePacmanConfig();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+    pacmanLock.forceUnlock();
 
-if (process.env.NODE_ENV === 'development') {
-    console.log('Serving static files enabled');
-    app.use(express.static(path.join(import.meta.dirname, 'static')));
-}
+    await taskQueue.add('checkAurForUpdates', null);
 
-app.get('/aur-openapi.json', (_, res) => {
-    res.sendFile('aur-openapi.json', { root: './' });
-});
+    webApp.listen(config.listenPort, config.listenHost, () => {
+        console.log(`Server listening at http://${config.listenHost}:${config.listenPort}`);
+    });
+};
 
-app.get('/aur-buildserver-next-backend.json', (_, res) => {
-    res.sendFile('aur-buildserver-next-backend.json', { root: './' });
-});
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
-    swaggerOptions: {
-        urls: [
-            {
-                url: '/aur-buildserver-next-backend.json',
-                name: 'AUR Buildserver Next Backend OpenAPI',
-            },
-        ],
-    },
-}));
-
-app.use('/api', api);
-
-app.listen(config.listenPort, config.listenHost, () => {
-    console.log(`Server listening at http://${config.listenHost}:${config.listenPort}`);
+main().catch((e) => {
+    console.error('program error', e);
+    process.exit(1);
 });

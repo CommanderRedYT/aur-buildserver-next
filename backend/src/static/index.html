@@ -13,16 +13,13 @@
     // wrap button with div and add a p that says "Result: "
     buttonsWithHref.forEach(button => {
         const div = document.createElement('div');
-        const p = document.createElement('p');
         const btn = document.createElement('button');
         btn.innerText = 'Clear';
-        p.innerText = 'Result: ';
-        div.appendChild(p);
         button.parentNode.insertBefore(div, button);
         div.appendChild(button);
         div.appendChild(btn);
 
-        const result = document.createElement('p');
+        const result = document.createElement('pre');
         div.appendChild(result);
 
         button.addEventListener('click', () => {
@@ -30,11 +27,11 @@
             result.innerText = 'Loading...';
             fetch(href)
                 .then(response => response.text())
-                .then(data => {
-                    result.innerText = `Result: ${data}`
+                .then(async data => {
+                    result.innerText = `Result: ${data}`;
                 })
-                .catch(error => {
-                    result.innerText = `Error: ${error}`
+                .catch(async error => {
+                    result.innerText = `Error: ${error}`;
                 });
         });
 

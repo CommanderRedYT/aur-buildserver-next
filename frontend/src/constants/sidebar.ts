@@ -4,6 +4,11 @@ import type { SvgIconComponent } from '@mui/icons-material';
 import AppsIcon from '@mui/icons-material/Apps';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import InfoIcon from '@mui/icons-material/Info';
+import SettingsIcon from '@mui/icons-material/Settings';
+import ConstructionIcon from '@mui/icons-material/Construction';
+// gnupg icon
+import GpgIcon from '@mui/icons-material/GppGood';
 
 export interface SubheaderMenuItem {
     key: string;
@@ -39,6 +44,18 @@ const MenuItems: MenuItemsType = [
         Icon: BookmarkIcon,
     },
     {
+        key: 'builds',
+        title: t => t('Builds'),
+        href: '/builds',
+        Icon: ConstructionIcon,
+    },
+    {
+        key: 'gnupg',
+        title: t => t('GnuPG Keys'),
+        href: '/gnupg',
+        Icon: GpgIcon,
+    },
+    {
         key: 'discover',
         subheader: t => t('Discover'),
     },
@@ -47,6 +64,22 @@ const MenuItems: MenuItemsType = [
         title: t => t('Discover packages'),
         href: '/discover',
         Icon: AppsIcon,
+    },
+    {
+        key: 'usage-and-settings',
+        subheader: t => t('Usage and settings'),
+    },
+    {
+        key: 'usage',
+        title: t => t('Usage'),
+        href: '/usage',
+        Icon: InfoIcon,
+    },
+    {
+        key: 'settings',
+        title: t => t('Settings'),
+        href: '/settings',
+        Icon: SettingsIcon,
     },
 ];
 

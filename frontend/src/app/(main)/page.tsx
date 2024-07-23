@@ -1,5 +1,5 @@
 import type { FC } from 'react';
 
-const Home: FC = () => <h1>Home</h1>;
+const DashboardPage: FC = () => <h1>Dashboard</h1>;
 
-export default Home;
+export default DashboardPage;

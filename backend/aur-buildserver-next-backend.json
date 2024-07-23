@@ -129,6 +129,12 @@
                     "url":  {
                         "type": "string",
                         "nullable": true
+                    },
+                    "dependencies": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 },
                 "required": [
@@ -149,10 +155,379 @@
                     "urlPath",
                     "url"
                 ]
+            },
+            "InfoResponse": {
+                "type": "object",
+                "description": "Server Information response",
+                "properties": {
+                    "signingKeyId": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "signingKeyId"
+                ]
+            },
+            "BuildFromDatabase": {
+                "type": "object",
+                "description": "Information about a build from database",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "running": {
+                        "type": "boolean"
+                    },
+                    "startedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "finishedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "exitCode": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "version": {
+                        "type": "object",
+                        "properties": {
+                            "pkgver": {
+                                "type": "string"
+                            },
+                            "pkgrel": {
+                                "type": "string"
+                            },
+                            "gitHash": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "pkgver",
+                            "pkgrel",
+                            "gitHash"
+                        ]
+                    },
+                    "package": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "id"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "running",
+                    "startedAt",
+                    "finishedAt",
+                    "exitCode",
+                    "success",
+                    "version",
+                    "package"
+                ]
+            },
+            "LogFile": {
+                "type": "string"
+            },
+            "LogFileResponse": {
+                "type": "object",
+                "description": "Response for log file",
+                "properties": {
+                    "logFileContents": {
+                        "$ref": "#/components/schemas/LogFile"
+                    },
+                    "logFile": {
+                        "type": "string"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "startedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "finishedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "exitCode": {
+                        "type": "number",
+                        "nullable": true
+                    },
+                    "running": {
+                        "type": "boolean"
+                    },
+                    "version": {
+                        "type": "object",
+                        "properties": {
+                            "pkgver": {
+                                "type": "string"
+                            },
+                            "pkgrel": {
+                                "type": "string"
+                            },
+                            "gitHash": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "logFile",
+                    "success",
+                    "startedAt",
+                    "finishedAt",
+                    "exitCode",
+                    "running",
+                    "version"
+                ]
             }
         }
     },
     "paths": {
+        "/api/info": {
+            "get": {
+                "summary": "Get information from the backend",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/SuccessResponse"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/InfoResponse"
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/builds/list": {
+            "get": {
+                "summary": "List all builds",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/SuccessResponse"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/BuildFromDatabase"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/builds/details/{buildId}": {
+            "parameters": [
+                {
+                    "name": "buildId",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "summary": "Get the log file of a build",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/SuccessResponse"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/LogFileResponse"
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/gnupg/list": {
+            "get": {
+                "summary": "List all GnuPG keys",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/SuccessResponse"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "keyId": {
+                                                                "type": "string"
+                                                            },
+                                                            "accepted": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "keyId",
+                                                            "accepted"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/gnupg/trust": {
+            "post": {
+                "summary": "Trust a GnuPG key",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "keyId": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "keyId"
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/packages/remove": {
             "post": {
                 "summary": "Remove a package from database",
@@ -325,6 +700,71 @@
                                                 "data": {
                                                     "type": "string",
                                                     "description": "The pkgbuild content"
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/aur/fetchDetailed/{packageName}": {
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/packageName"
+                }
+            ],
+            "get": {
+                "summary": "Get detailed package information of an AUR package",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/SuccessResponse"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "allOf": [
+                                                        {
+                                                            "$ref": "./aur-openapi.json#/components/schemas/InfoResult"
+                                                        },
+                                                        {
+                                                            "type": "object",
+                                                            "description": "Additional data",
+                                                            "properties": {
+                                                                "aurPackages": {
+                                                                    "description": "List of package names of dependencies etc. that are not from official repositories",
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string",
+                                                                        "description": "Package name"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
                                                 }
                                             },
                                             "required": [

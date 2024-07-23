@@ -30,8 +30,10 @@ async function cache<T>(fn: () => T, options: CacheOptions): Promise<T> {
             return JSON.parse(data);
         }
     } catch (e) {
-        if (process.env.NODE_ENV === 'development') {
-            console.error('failed to read cache', e);
+        if ((e as { code: string }).code !== 'ENOENT') {
+            if (process.env.NODE_ENV === 'development') {
+                console.error('failed to read cache', e);
+            }
         }
     }
 

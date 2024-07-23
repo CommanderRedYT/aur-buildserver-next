@@ -18,14 +18,12 @@ import backendFetcherApi from '@/lib/fetcher';
 import FormatListBulletedRoundedIcon from '@mui/icons-material/FormatListBulletedRounded';
 import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
 import type { Theme } from '@mui/material';
-import {
-    Box,
-    CircularProgress,
-    TextField,
-    ToggleButton,
-    ToggleButtonGroup,
-    useMediaQuery,
-} from '@mui/material';
+import { useMediaQuery } from '@mui/material';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import TextField from '@mui/material/TextField';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 const searchEndpoint = backendFetcherApi('/api/aur/search/{packageName}')
     .method('get')
@@ -233,6 +231,7 @@ const DiscoverPackageContent: FC = () => {
             <DiscoverPackageDetailsModal
                 open={!!selectedPackage}
                 onClose={() => setSelectedPackage(null)}
+                updateKnownPackages={updateKnownPackages}
                 pkg={selectedPackage}
             />
         </>

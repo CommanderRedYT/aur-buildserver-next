@@ -12,11 +12,6 @@ export default async function listPackages(_: Request, res: Response): Promise<v
         successResponse<'/api/packages/list'>(res, packages, { canCache: false });
     } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
-            if (e.code === 'P2002') {
-                errorResponse(res, 409, 'Package already exists');
-                return;
-            }
-
             errorResponse(res, 500, e.message);
         } else {
             errorResponse(res, 500);

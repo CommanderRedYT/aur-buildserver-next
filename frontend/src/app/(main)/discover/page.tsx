@@ -2,7 +2,8 @@ import type { FC } from 'react';
 
 import DiscoverPackageContent from '@/app/(main)/discover/_components/DiscoverPackageContent';
 
-import { Box, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 const DiscoverPackagesPage: FC = () => (
     <Box display="flex" flexDirection="column" flex={1}>

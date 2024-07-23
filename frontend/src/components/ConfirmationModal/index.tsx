@@ -3,7 +3,9 @@ import type { FC } from 'react';
 import CustomModal from '@/components/CustomModal';
 
 import type { ButtonProps } from '@mui/material';
-import { Box, Button, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 export type ConfirmationModalAction = 'confirm' | 'cancel';
 

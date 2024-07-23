@@ -6,7 +6,8 @@ import { useEffect, useRef } from 'react';
 import hljs from 'highlight.js';
 
 import 'highlight.js/styles/github-dark.css';
-import { styled, Typography } from '@mui/material';
+import { styled } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 export interface PkgbuildViewerProps {
     pkgbuild: string | null;

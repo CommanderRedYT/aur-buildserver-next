@@ -17,10 +17,10 @@ model AurPackage {
 
   lastModifiedDatabaseEntry DateTime @updatedAt
 
-  versionsBuild AurPackageVersion[]
+  versions AurPackageVersion[]
 
   // metadata
-  name             String
+  name             String   @unique
   description      String?
   packageBaseId    Int
   packageBase      String
@@ -34,56 +34,58 @@ model AurPackage {
   urlPath          String?
   url              String?
 
-  licenses         AurPackageLicense[]
-  dependencies     AurDependency[]
-  makeDependencies AurMakeDependency[]
-  keywords         AurKeyword[]
-  coMaintainers    AurPackageCoMaintainer[]
-}
-
-model AurPackageLicense {
-  id        String @id @default(cuid())
-  packageId Int
-  license   String
-
-  package AurPackage @relation(fields: [packageId], references: [packageId], onDelete: Cascade)
+  dependencies AurDependency[]
+  builds       AurPackageBuild[]
+  gnupgKeys    GnupgKeys[]
 }
 
 model AurDependency {
-  id          String @id @default(cuid())
-  packageId   Int
-  packageName String
+  id                  String  @id @default(cuid())
+  pkgId               String
+  packageName         String
+  strippedPackageName String
+  isAur               Boolean
 
-  package AurPackage @relation(fields: [packageId], references: [packageId], onDelete: Cascade)
-}
-
-model AurMakeDependency {
-  id          String @id @default(cuid())
-  packageId   Int
-  packageName String
-
-  package AurPackage @relation(fields: [packageId], references: [packageId], onDelete: Cascade)
-}
-
-model AurKeyword {
-  id      String @id @default(cuid())
-  keyword String @unique
-
-  packages AurPackage[]
-}
-
-model AurPackageCoMaintainer {
-  id        String @id @default(cuid())
-  packageId Int
-  name      String
-
-  package AurPackage @relation(fields: [packageId], references: [packageId], onDelete: Cascade)
+  package AurPackage @relation(fields: [pkgId], references: [id], onDelete: Cascade)
 }
 
 model AurPackageVersion {
-  id        String @id @default(cuid())
-  packageId String
-  version   String
+  versionId String @id @default(cuid())
+  pkgId     String
 
-  package AurPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  pkgver  String
+  pkgrel  String
+  gitHash String @unique
+
+  package AurPackage        @relation(fields: [pkgId], references: [id], onDelete: Cascade)
+  build   AurPackageBuild[]
+}
+
+model AurPackageBuild {
+  id        String @id
+  pkgId     String
+  versionId String
+
+  taskJobId String @unique
+  taskPid   Int?
+
+  logFile    String
+  running    Boolean
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  exitCode   Int?
+  success    Boolean?
+  failReason String?
+
+  package AurPackage        @relation(fields: [pkgId], references: [id], onDelete: Cascade)
+  version AurPackageVersion @relation(fields: [versionId], references: [versionId], onDelete: Cascade)
+}
+
+model GnupgKeys {
+  id       String  @id @default(cuid())
+  keyId    String
+  accepted Boolean
+
+  packageId Int        @unique
+  package   AurPackage @relation(fields: [packageId], references: [packageId], onDelete: Cascade)
 }

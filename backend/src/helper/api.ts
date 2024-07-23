@@ -69,7 +69,7 @@ export type ApiResponseType<T extends keyof backendPaths> = GetKeyIfExists<GetSu
 
 export type SuccessResponse<T extends keyof backendPaths> = ApiResponseType<T> extends undefined ? [res: Response, data?: never, options?: ResponseOptions] : [res: Response, data: ApiResponseType<T>, options?: ResponseOptions];
 
-export const successResponse = <T extends keyof backendPaths = never>(...args: SuccessResponse<T>): void => {
+export const successResponse = <T extends keyof backendPaths>(...args: SuccessResponse<T>): void => {
     const [res, dataOrOptions, maybeOptions] = args;
 
     const actualData = dataOrOptions as ApiResponseType<T>;
@@ -78,7 +78,7 @@ export const successResponse = <T extends keyof backendPaths = never>(...args: S
         ...(maybeOptions as ResponseOptions),
     };
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' && process.env.DEBUG) {
         console.log('successResponse', actualData, actualOptions);
     }
 
@@ -91,9 +91,30 @@ export const successResponse = <T extends keyof backendPaths = never>(...args: S
     res.status(200).json({ success: true, data: actualData });
 };
 
-export const errorResponse = (res: Response, code: HttpStatusCode, message?: string, options?: ResponseOptions, debugInfo?: unknown): void => {
+export class ErrorResponseThrowable extends Error {
+    public readonly code: HttpStatusCode;
+
+    public override readonly message: string;
+
+    public readonly debugInfo?: unknown;
+
+    constructor(code: HttpStatusCode, message: string, debugInfo?: unknown) {
+        super(message);
+
+        this.code = code;
+        this.message = message;
+        this.debugInfo = debugInfo;
+    }
+}
+
+export const errorResponse = (res: Response, code: HttpStatusCode, message?: string | ErrorResponseThrowable, options?: ResponseOptions, debugInfo?: unknown): void => {
     if (process.env.NODE_ENV === 'development') {
-        console.error('errorResponse', code, message, debugInfo);
+        console.log('errorResponse', code, message, debugInfo);
+    }
+
+    if (message instanceof ErrorResponseThrowable) {
+        res.status(message.code).json({ success: false, message: message.message, debugInfo: message.debugInfo });
+        return;
     }
 
     res.status(code).json({ success: false, message: message ?? 'Internal server error' });

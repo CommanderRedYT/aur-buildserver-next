@@ -6,7 +6,7 @@ import MenuItems from '@/constants/sidebar';
 import NavGroup from '@/layout/Sidebar/NavGroup';
 import NavItem from '@/layout/Sidebar/NavItem';
 
-import { List } from '@mui/material';
+import List from '@mui/material/List';
 
 const SidebarItems: FC = () => {
     const pathname = usePathname();

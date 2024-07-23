@@ -37,7 +37,7 @@ if [ $FORCE_RESET -eq 1 ]; then
     rm -f $DATABASE_PATH
     DATABASE_EXISTS=0
 
-    rm -rf ./data/*
+    rm -rf ./prisma/*.sqlite* ./prisma/migrations
 fi
 
 if [ $DATABASE_EXISTS -eq 0 ]; then

@@ -10,7 +10,8 @@ import type { ListViewModes, TypeOfArrayItem } from '@/types';
 
 import type { SearchPackageReturnType } from '@/lib/fetcher';
 
-import { Box, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 export interface DiscoverPackageListProps {
     viewMode: ListViewModes;
@@ -82,7 +83,7 @@ const DiscoverPackageList: FC<DiscoverPackageListProps> = ({
                             gap={7}
                             padding={8}
                         >
-                            <UndrawNoData height="50%" width="100%" />
+                            <UndrawNoData height="50%" width="50%" />
                             <Box
                                 display="flex"
                                 flexDirection="column"
@@ -115,7 +116,7 @@ const DiscoverPackageList: FC<DiscoverPackageListProps> = ({
                     gap={7}
                     padding={8}
                 >
-                    <UndrawApplications height="50%" width="100%" />
+                    <UndrawApplications height="50%" width="50%" />
                     <Box
                         display="flex"
                         flexDirection="column"

@@ -8,6 +8,8 @@ import { errorResponse, requirePathParams, successResponse } from '@/helper/api'
 
 const requiredParams = ['packageName'] as const;
 
+const searchEndpoint = fetcherApi('/rpc/v5/search/{arg}').method('get').create();
+
 export default async function searchPackage(req: Request, res: Response): Promise<void> {
     const params = requirePathParams(requiredParams)(req, res);
 
@@ -15,8 +17,6 @@ export default async function searchPackage(req: Request, res: Response): Promis
         errorResponse(res, 400, 'Missing parameter from path');
         return;
     }
-
-    const searchEndpoint = fetcherApi('/rpc/v5/search/{arg}').method('get').create();
 
     try {
         const response = await searchEndpoint({
