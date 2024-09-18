@@ -1,5 +1,4 @@
-import type { KnownPackagesDataItem } from '@/app/(main)/packages/page';
-
+import type { KnownPackagesDataItem } from '@/lib/api/getKnownPackages';
 import backendFetcherApi from '@/lib/fetcher';
 
 export type AddPackageToPackageList = (

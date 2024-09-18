@@ -6,7 +6,13 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 const LoadingLayout: FC = () => (
-    <Box height="100%" width="100%" margin="auto" display="flex" maxHeight="100vh">
+    <Box
+        height="100%"
+        width="100%"
+        margin="auto"
+        display="flex"
+        maxHeight="100vh"
+    >
         <Box
             display="flex"
             justifyContent="center"

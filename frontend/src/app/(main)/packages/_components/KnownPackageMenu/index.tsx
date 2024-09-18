@@ -4,10 +4,9 @@ import type { FC } from 'react';
 
 import { useSnackbar } from 'notistack';
 
-import type { KnownPackagesDataItem } from '@/app/(main)/packages/page';
-
 import useConfirmationModal from '@/hooks/useConfirmationModal';
 
+import type { KnownPackagesDataItem } from '@/lib/api/getKnownPackages';
 import removePackageFromPackageList from '@/lib/api/removePackageFromPackageList';
 
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -43,7 +42,9 @@ const KnownPackageMenu: FC<KnownPackageMenuProps> = ({ onClose, pkg }) => {
             })
             .catch(error => {
                 if (!error.data) {
-                    enqueueSnackbar('Failed to delete package', { variant: 'error' });
+                    enqueueSnackbar('Failed to delete package', {
+                        variant: 'error',
+                    });
                     return;
                 }
                 enqueueSnackbar(error.data.message, { variant: 'error' });

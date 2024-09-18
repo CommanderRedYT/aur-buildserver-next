@@ -1,5 +1,3 @@
-const important = (value: string): string => {
-    return `${value} !important`;
-};
+const important = (value: string): string => `${value} !important`;
 
 export default important;

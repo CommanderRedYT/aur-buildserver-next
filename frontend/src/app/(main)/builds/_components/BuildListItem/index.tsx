@@ -37,7 +37,9 @@ const BuildListItem: FC<BuildListItemProps> = ({ build, onClick }) => (
             sx={{ whiteSpace: 'normal' }}
         />
         <CardContent>
-            <pre style={{ textWrap: 'wrap' }}>{JSON.stringify(build, null, 2)}</pre>
+            <pre style={{ textWrap: 'wrap' }}>
+                {JSON.stringify(build, null, 2)}
+            </pre>
         </CardContent>
     </CustomCard>
 );

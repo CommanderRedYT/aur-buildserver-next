@@ -8,9 +8,8 @@ import CustomSkeletonWave from '@/components/CustomSkeletonWave';
 import type { FetchInfoReturnType } from '@/lib/fetcher';
 import getContrastColor from '@/lib/getContrastColor';
 
-import { useTheme } from '@mui/material';
+import { styled, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
-import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 const StyledCodeBlock = styled('code')(({ theme }) => ({

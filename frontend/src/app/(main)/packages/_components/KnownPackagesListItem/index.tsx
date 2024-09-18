@@ -1,10 +1,9 @@
 import type { FC } from 'react';
 import React from 'react';
 
-import type { KnownPackagesDataItem } from '@/app/(main)/packages/page';
-
 import CustomCard from '@/components/CustomCard';
 
+import type { KnownPackagesDataItem } from '@/lib/api/getKnownPackages';
 import stringAvatar from '@/lib/stringAvatar';
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';

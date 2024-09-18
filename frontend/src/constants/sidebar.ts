@@ -3,12 +3,12 @@ import type { Route } from 'next';
 import type { SvgIconComponent } from '@mui/icons-material';
 import AppsIcon from '@mui/icons-material/Apps';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import InfoIcon from '@mui/icons-material/Info';
-import SettingsIcon from '@mui/icons-material/Settings';
 import ConstructionIcon from '@mui/icons-material/Construction';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 // gnupg icon
 import GpgIcon from '@mui/icons-material/GppGood';
+import InfoIcon from '@mui/icons-material/Info';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 export interface SubheaderMenuItem {
     key: string;
