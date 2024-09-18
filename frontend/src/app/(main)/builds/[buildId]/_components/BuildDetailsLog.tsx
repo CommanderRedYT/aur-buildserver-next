@@ -39,8 +39,8 @@ const BuildDetailsLog: FC<BuildDetailsLogProps> = ({ logFileContents }) => {
                 .react-lazylog-searchbar {
                     border-top-right-radius: 16px;
                     border-top-left-radius: 16px;
-                    background-color: ${theme.colorSchemes.dark.palette.background.paper};
-                    border-bottom: 1px solid ${theme.colorSchemes.dark.palette.divider};
+                    background-color: ${theme.colorSchemes.dark?.palette.background.paper};
+                    border-bottom: 1px solid ${theme.colorSchemes.dark?.palette.divider};
                 }
             `}
             </style>
@@ -58,9 +58,9 @@ const BuildDetailsLog: FC<BuildDetailsLogProps> = ({ logFileContents }) => {
                             selectableLines
                             style={{
                                 backgroundColor:
-                                    theme.colorSchemes.dark.palette.background
+                                    theme.colorSchemes.dark?.palette.background
                                         .paper,
-                                color: theme.colorSchemes.dark.palette.text
+                                color: theme.colorSchemes.dark?.palette.text
                                     .primary,
                                 borderBottomRightRadius: 16,
                                 borderBottomLeftRadius: 16,

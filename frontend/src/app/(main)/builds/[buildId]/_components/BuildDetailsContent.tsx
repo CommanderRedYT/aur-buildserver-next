@@ -128,20 +128,20 @@ const BuildDetailsContent: FC<BuildDetailsContentProps> = ({
                         <StyledCard
                             style={{
                                 backgroundColor: details.running
-                                    ? theme.colorSchemes.light.palette.warning
+                                    ? theme.colorSchemes.light?.palette.warning
                                           .main
                                     : details.success
-                                      ? theme.colorSchemes.light.palette.success
-                                            .main
-                                      : theme.colorSchemes.light.palette.error
+                                      ? theme.colorSchemes.light?.palette
+                                            .success.main
+                                      : theme.colorSchemes.light?.palette.error
                                             .main,
                                 color: details.running
-                                    ? theme.colorSchemes.light.palette.warning
+                                    ? theme.colorSchemes.light?.palette.warning
                                           .contrastText
                                     : details.success
-                                      ? theme.colorSchemes.light.palette.success
-                                            .contrastText
-                                      : theme.colorSchemes.light.palette.error
+                                      ? theme.colorSchemes.light?.palette
+                                            .success.contrastText
+                                      : theme.colorSchemes.light?.palette.error
                                             .contrastText,
                             }}
                         >
@@ -159,9 +159,9 @@ const BuildDetailsContent: FC<BuildDetailsContentProps> = ({
                         <StyledCard
                             style={{
                                 backgroundColor:
-                                    theme.colorSchemes.light.palette.primary
+                                    theme.colorSchemes.light?.palette.primary
                                         .main,
-                                color: theme.colorSchemes.light.palette.primary
+                                color: theme.colorSchemes.light?.palette.primary
                                     .contrastText,
                             }}
                         >
@@ -179,9 +179,9 @@ const BuildDetailsContent: FC<BuildDetailsContentProps> = ({
                         <StyledCard
                             style={{
                                 backgroundColor:
-                                    theme.colorSchemes.light.palette.primary
+                                    theme.colorSchemes.light?.palette.primary
                                         .main,
-                                color: theme.colorSchemes.light.palette.primary
+                                color: theme.colorSchemes.light?.palette.primary
                                     .contrastText,
                             }}
                         >
@@ -204,9 +204,9 @@ const BuildDetailsContent: FC<BuildDetailsContentProps> = ({
                         <StyledCard
                             style={{
                                 backgroundColor:
-                                    theme.colorSchemes.light.palette.primary
+                                    theme.colorSchemes.light?.palette.primary
                                         .main,
-                                color: theme.colorSchemes.light.palette.primary
+                                color: theme.colorSchemes.light?.palette.primary
                                     .contrastText,
                             }}
                         >

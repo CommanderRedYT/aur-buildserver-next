@@ -6,7 +6,7 @@ import type {
     PaletteColorChannel,
     PaletteCommonChannel,
     PaletteTextChannel,
-} from '@mui/material/styles/experimental_extendTheme';
+} from '@mui/material/styles/createThemeWithVars';
 
 export type TypeOfArrayItem<T> = T extends (infer U)[] ? U : never;
 

@@ -1,5 +1,5 @@
 # Dockerfile for development backend container
-FROM ghcr.io/commanderredyt/node:20.15.0-archlinux as build
+FROM ghcr.io/commanderredyt/node:22.9.0-archlinux as build
 
 # Set the working directory
 WORKDIR /app

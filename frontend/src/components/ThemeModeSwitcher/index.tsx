@@ -1,6 +1,7 @@
 import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import { useColorScheme } from '@mui/material';
@@ -19,15 +20,51 @@ const ThemeModeSwitcher: FC<ThemeModeSwitcherProps> = ({ style }) => {
         setMounted(true);
     }, []);
 
+    const nextMode = (): void => {
+        switch (mode) {
+            case 'light':
+                setMode('dark');
+                break;
+            case 'dark':
+                setMode('system');
+                break;
+            case 'system':
+                setMode('light');
+                break;
+            default:
+                setMode('light');
+                break;
+        }
+    };
+
+    const icon = useMemo(
+        () =>
+            mode === 'light' ? (
+                <DarkModeIcon />
+            ) : mode === 'dark' ? (
+                <LightModeIcon />
+            ) : (
+                <AutoAwesomeIcon />
+            ),
+        [mode],
+    );
+
+    const modeName = useMemo(
+        () =>
+            mode === 'light'
+                ? 'Light mode'
+                : mode === 'dark'
+                  ? 'Dark mode'
+                  : 'System',
+        [mode],
+    );
+
     if (!mounted) return null;
 
     return (
-        <Tooltip title={mode === 'light' ? 'Dark mode' : 'Light mode'} arrow>
-            <IconButton
-                onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}
-                style={style}
-            >
-                {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+        <Tooltip title={modeName} arrow>
+            <IconButton onClick={nextMode} style={style}>
+                {icon}
             </IconButton>
         </Tooltip>
     );

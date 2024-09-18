@@ -21,6 +21,11 @@ const nextConfig = {
         CONFIG_API_URL: process.env.CONFIG_API_URL,
         CONFIG_PUBLIC_URL: process.env.CONFIG_PUBLIC_URL,
     },
+    logging: {
+        fetches: {
+            fullUrl: true,
+        },
+    },
     rewrites: async () => {
         return [
             {

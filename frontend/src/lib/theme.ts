@@ -2,7 +2,7 @@
 
 import { Inter } from 'next/font/google';
 
-import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 
 export const inter = Inter({
     weight: ['400', '700'],
@@ -11,7 +11,15 @@ export const inter = Inter({
     fallback: ['sans-serif'],
 });
 
-const customTheme = extendTheme({
+const customTheme = createTheme({
+    colorSchemes: {
+        light: true,
+        dark: true,
+    },
+    cssVariables: {
+        colorSchemeSelector: 'class',
+    },
+    defaultColorScheme: 'light',
     direction: 'ltr',
     typography: {
         fontFamily: inter.style.fontFamily,

@@ -5,9 +5,9 @@ import React from 'react';
 
 import theme from '@/lib/theme';
 
+import { ThemeProvider } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
-import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 
 export interface RootLayoutProps {
@@ -34,11 +34,11 @@ const RootLayout: FC<RootLayoutProps> = ({ children }) => (
     <html lang="en">
         <body>
             <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-                <CssVarsProvider defaultMode="system" theme={theme}>
+                <ThemeProvider theme={theme}>
                     <InitColorSchemeScript />
                     <CssBaseline />
                     <main>{children}</main>
-                </CssVarsProvider>
+                </ThemeProvider>
             </AppRouterCacheProvider>
         </body>
     </html>
