@@ -7,7 +7,8 @@
     "plugin:@typescript-eslint/recommended",
     "prettier",
     "airbnb-base",
-    "airbnb-typescript/base"/*, "plugin:jest/recommended"*/
+    "airbnb-typescript/base",/*, "plugin:jest/recommended"*/
+    "plugin:deprecation/recommended"
   ],
   "plugins": [
     "@typescript-eslint",

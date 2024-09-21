@@ -79,7 +79,7 @@ const GnupgIssuesContent: FC<GnupgIssuesContentProps> = ({
             {!gnupgData || gnupgData?.length === 0 ? (
                 <Box>
                     <Typography>
-                        There are any GnuPG keys that need to be accepted.
+                        There are no GnuPG keys that need to be accepted.
                     </Typography>
                 </Box>
             ) : null}

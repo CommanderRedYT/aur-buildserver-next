@@ -197,23 +197,7 @@
                         "nullable": true
                     },
                     "version": {
-                        "type": "object",
-                        "properties": {
-                            "pkgver": {
-                                "type": "string"
-                            },
-                            "pkgrel": {
-                                "type": "string"
-                            },
-                            "gitHash": {
-                                "type": "string"
-                            }
-                        },
-                        "required": [
-                            "pkgver",
-                            "pkgrel",
-                            "gitHash"
-                        ]
+                        "$ref": "#/components/schemas/Version"
                     },
                     "package": {
                         "type": "object",
@@ -276,18 +260,7 @@
                         "type": "boolean"
                     },
                     "version": {
-                        "type": "object",
-                        "properties": {
-                            "pkgver": {
-                                "type": "string"
-                            },
-                            "pkgrel": {
-                                "type": "string"
-                            },
-                            "gitHash": {
-                                "type": "string"
-                            }
-                        }
+                        "$ref": "#/components/schemas/Version"
                     }
                 },
                 "required": [
@@ -298,6 +271,25 @@
                     "exitCode",
                     "running",
                     "version"
+                ]
+            },
+            "Version": {
+                "type": "object",
+                "properties": {
+                    "pkgver": {
+                        "type": "string"
+                    },
+                    "pkgrel": {
+                        "type": "string"
+                    },
+                    "gitHash": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "pkgver",
+                    "pkgrel",
+                    "gitHash"
                 ]
             }
         }

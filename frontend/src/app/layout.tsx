@@ -31,11 +31,11 @@ export const viewport: Viewport = {
 };
 
 const RootLayout: FC<RootLayoutProps> = ({ children }) => (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
         <body>
             <AppRouterCacheProvider options={{ enableCssLayer: true }}>
                 <ThemeProvider theme={theme}>
-                    <InitColorSchemeScript />
+                    <InitColorSchemeScript attribute="class" />
                     <CssBaseline />
                     <main>{children}</main>
                 </ThemeProvider>

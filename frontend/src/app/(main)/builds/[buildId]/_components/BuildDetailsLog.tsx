@@ -33,7 +33,7 @@ const BuildDetailsLog: FC<BuildDetailsLogProps> = ({ logFileContents }) => {
     }, [logFileContents]);
 
     return (
-        <Box height="70vh" width="100%" borderRadius={16}>
+        <Box height="70vh" width="100%" borderRadius={16} flex={1}>
             <style>
                 {`
                 .react-lazylog-searchbar {

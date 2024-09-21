@@ -39,9 +39,9 @@ const ThemeModeSwitcher: FC<ThemeModeSwitcherProps> = ({ style }) => {
 
     const icon = useMemo(
         () =>
-            mode === 'light' ? (
+            mode === 'dark' ? (
                 <DarkModeIcon />
-            ) : mode === 'dark' ? (
+            ) : mode === 'light' ? (
                 <LightModeIcon />
             ) : (
                 <AutoAwesomeIcon />

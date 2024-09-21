@@ -24,8 +24,7 @@ export interface BuildDetailsContentProps {
 }
 
 const StyledCard = styled(Card)(({ theme }) => ({
-    minWidth: 220,
-    maxWidth: 280,
+    minWidth: 'min(220px, 100%)',
     flex: '1 1 0',
     boxShadow: theme.shadows[3],
 
@@ -35,11 +34,11 @@ const StyledCard = styled(Card)(({ theme }) => ({
 
     // remove padding from card content and header
     '& .MuiCardHeader-root': {
-        padding: theme.spacing(1, 1.5, 0, 1.5),
+        padding: theme.spacing(1, 1, 0, 1),
     },
 
     '& .MuiCardContent-root': {
-        padding: theme.spacing(1.5),
+        padding: theme.spacing(1),
     },
 }));
 
@@ -222,7 +221,7 @@ const BuildDetailsContent: FC<BuildDetailsContentProps> = ({
                             </CardContent>
                         </StyledCard>
                     </Box>
-                    <Box marginX={3}>
+                    <Box flex={1} display="flex" flexDirection="column">
                         <BuildDetailsLog
                             logFileContents={details.logFileContents}
                         />

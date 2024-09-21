@@ -47,6 +47,7 @@ const KnownPackagesListItem: FC<KnownPackagesListItemProps> = ({
             <Typography
                 variant="body2"
                 color="textSecondary"
+                component="p"
                 paragraph
                 sx={{ margin: 0 }}
             >

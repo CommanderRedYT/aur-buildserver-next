@@ -6,7 +6,8 @@
         "plugin:@typescript-eslint/recommended",
         "prettier",
         "airbnb-base",
-        "airbnb-typescript/base"
+        "airbnb-typescript/base",
+        "plugin:deprecation/recommended"
         /*, "plugin:jest/recommended"*/
     ],
     "overrides": [

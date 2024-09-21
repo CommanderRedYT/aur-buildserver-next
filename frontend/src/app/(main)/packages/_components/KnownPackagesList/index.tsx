@@ -134,14 +134,16 @@ const KnownPackagesList: FC<KnownPackagesListProps> = ({
                         <FullWidthForm onSubmit={handleSearch}>
                             <TextField
                                 id="search-package"
-                                label="Search known packages"
+                                label="Search known packages (not implemented yet)"
                                 variant="filled"
                                 fullWidth
                                 size="small"
-                                InputProps={{
-                                    endAdornment: loading ? (
-                                        <CircularProgress size={20} />
-                                    ) : null,
+                                slotProps={{
+                                    input: {
+                                        endAdornment: loading ? (
+                                            <CircularProgress size={20} />
+                                        ) : null,
+                                    },
                                 }}
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}

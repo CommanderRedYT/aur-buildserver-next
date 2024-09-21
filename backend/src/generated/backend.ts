@@ -592,11 +592,7 @@ export interface components {
             finishedAt: string | null;
             exitCode: number | null;
             success: boolean | null;
-            version: {
-                pkgver: string;
-                pkgrel: string;
-                gitHash: string;
-            };
+            version: components["schemas"]["Version"];
             package: {
                 name: string;
                 id: string;
@@ -614,11 +610,12 @@ export interface components {
             finishedAt: string | null;
             exitCode: number | null;
             running: boolean;
-            version: {
-                pkgver?: string;
-                pkgrel?: string;
-                gitHash?: string;
-            };
+            version: components["schemas"]["Version"];
+        };
+        Version: {
+            pkgver: string;
+            pkgrel: string;
+            gitHash: string;
         };
         BaseResult: {
             /** @description Number of search results */

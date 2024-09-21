@@ -134,13 +134,15 @@ const BuildList: FC<BuildListProps> = ({ initialBuildsData }) => {
                                 variant="filled"
                                 fullWidth
                                 size="small"
-                                InputProps={{
-                                    endAdornment: loading ? (
-                                        <CircularProgress size={20} />
-                                    ) : null,
-                                }}
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
+                                slotProps={{
+                                    input: {
+                                        endAdornment: loading ? (
+                                            <CircularProgress size={20} />
+                                        ) : null,
+                                    },
+                                }}
                             />
                         </FullWidthForm>
                         {lgUp ? (
