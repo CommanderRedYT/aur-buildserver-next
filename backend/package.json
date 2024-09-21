@@ -24,24 +24,24 @@
     "generate-types": "yarn fetch-aur-api && yarn openapi-typescript ./aur-openapi.json --output src/generated/aur.ts && yarn openapi-typescript ./aur-buildserver-next-backend.json --output src/generated/backend.ts"
   },
   "dependencies": {
-    "@prisma/client": "5.16.0",
-    "axios": "^1.7.2",
-    "body-parser": "^1.20.2",
-    "bull": "^4.15.1",
-    "debug": "^4.3.5",
+    "@prisma/client": "5.19.1",
+    "axios": "^1.7.7",
+    "body-parser": "^1.20.3",
+    "bull": "^4.16.3",
+    "debug": "^4.3.7",
     "dockerode": "^4.0.2",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "morgan": "^1.10.0",
     "openapi-typescript-fetch": "^2.0.0",
     "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.1.0",
-    "prisma": "^5.16.0",
-    "simple-git": "^3.25.0",
+    "prisma": "^5.19.1",
+    "simple-git": "^3.27.0",
     "sqlite3": "^5.1.7",
     "swagger-ui-express": "^5.0.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.5.2"
+    "typescript": "^5.6.2"
   },
   "devDependencies": {
     "@types/bull": "^4.10.0",
